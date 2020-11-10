@@ -1,0 +1,23 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r, include = FALSE}
+library(tidyverse)
+library(readxl)
+```
+
+```{r, include = FALSE}
+df_dashes <- read_excel(path = "../data/raw_data.xlsx", sheet = "days")
+df_deliveries <- read_excel(path = "../data/raw_data.xlsx", sheet = "deliveries")
+```
+
+
+```{r}
+df_dashes <- df_dashes %>% mutate(
+  day = weekdays(as.Date(df_dashes$date)),
+  .after = date)
+```
+
