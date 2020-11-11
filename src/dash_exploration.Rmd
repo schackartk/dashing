@@ -15,9 +15,45 @@ df_deliveries <- read_excel(path = "../data/raw_data.xlsx", sheet = "deliveries"
 ```
 
 
-```{r}
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
 df_dashes <- df_dashes %>% mutate(
   day = weekdays(as.Date(df_dashes$date)),
   .after = date)
+
+df_dashes$day <- factor(df_dashes$day,
+                        levels = c("Sunday", "Monday", "Tuesday",
+                                   "Wednesday", "Thursday", "Friday",
+                                   "Saturday"))
+
+df_dashes <- df_dashes %>%
+  mutate(miles = odo_out - odo_in,
+         .after = odo_out) %>% 
+  mutate(per_mi = round(earnings / miles, 2),
+         per_trip = round(earnings / deliveries, 2),
+         .after = earnings)
+```
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+df_deliveries <- df_deliveries %>% 
+  mutate(total = base_pay + tip,
+         .after = tip,
+         day = weekdays(as.Date(df_deliveries$date)))
+
+df_deliveries$day <- factor(df_deliveries$day,
+                            levels = c("Sunday", "Monday", "Tuesday",
+                                       "Wednesday", "Thursday", "Friday",
+                                       "Saturday"))
+
+places_summary <- df_deliveries %>% group_by(place) %>% 
+  summarize(count = n(),
+            mean_base = mean(base_pay) %>% round(digits = 2),
+            mean_tip = mean(tip) %>% round(digits = 2),
+            mean_total = mean(total) %>% round(digits = 2))
+
+weekday_summary <- df_deliveries %>% group_by(day) %>% 
+  summarize(count = n(),
+            mean_base = mean(base_pay) %>% round(digits = 2),
+            mean_tip = mean(tip) %>% round(digits = 2),
+            mean_total = mean(total) %>% round(digits = 2))
 ```
 
