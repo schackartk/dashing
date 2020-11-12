@@ -5,6 +5,7 @@ output: html_notebook
 
 
 ```{r, include = FALSE}
+library(lubridate)
 library(tidyverse)
 library(readxl)
 ```
@@ -25,11 +26,17 @@ df_dashes$day <- factor(df_dashes$day,
                                    "Wednesday", "Thursday", "Friday",
                                    "Saturday"))
 
+df_dashes <- df_dashes %>% mutate(
+  start = ymd_hm(paste(df_dashes$date, df_dashes$time_in)),
+  end = ymd_hm(paste(df_dashes$date, df_dashes$time_out)),
+  total_time = round(as.double(difftime(end, start, units = "hours"), digits = 2)))
+
 df_dashes <- df_dashes %>%
   mutate(miles = odo_out - odo_in,
          .after = odo_out) %>% 
   mutate(per_mi = round(earnings / miles, 2),
          per_trip = round(earnings / deliveries, 2),
+         per_hour = round(earnings / total_time, 2),
          .after = earnings)
 ```
 
@@ -45,7 +52,7 @@ df_deliveries$day <- factor(df_deliveries$day,
                                        "Saturday"))
 
 # I want to add is SD or 95% CI on the below stats,
-# but need to consider if n should be calcualted based on the number
+# but need to consider if n should be calculated based on the number
 # of Fridays or based on the number of deliveries
 
 places_summary <- df_deliveries %>% group_by(place) %>% 
@@ -65,7 +72,7 @@ weekday_summary <- df_deliveries %>% group_by(day) %>%
 ```{r}
 weekday_summary %>% ggplot(aes(x = day, y = mean_tip, fill = mean_tip)) +
   geom_col() +
-  labs(x = "Day of Week",
+  labs(x = "",
        y = "Average Tip ($)") +
   theme_light()
 ```
