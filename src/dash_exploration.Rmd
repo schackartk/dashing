@@ -29,7 +29,7 @@ df_dashes$day <- factor(df_dashes$day,
 df_dashes <- df_dashes %>% mutate(
   start = ymd_hm(paste(df_dashes$date, df_dashes$time_in)),
   end = ymd_hm(paste(df_dashes$date, df_dashes$time_out)),
-  total_time = round(as.double(difftime(end, start, units = "hours"), digits = 2)))
+  total_time = round(as.numeric(difftime(end, start, units = "hours")), digits = 2))
 
 df_dashes <- df_dashes %>%
   mutate(miles = odo_out - odo_in,
@@ -51,7 +51,7 @@ df_deliveries$day <- factor(df_deliveries$day,
                                        "Wednesday", "Thursday", "Friday",
                                        "Saturday"))
 
-# I want to add is SD or 95% CI on the below stats,
+# I want to add in SD or 95% CI on the below stats,
 # but need to consider if n should be calculated based on the number
 # of Fridays or based on the number of deliveries
 
@@ -65,12 +65,17 @@ weekday_summary <- df_deliveries %>% group_by(day) %>%
   summarize(count = n(),
             mean_base = mean(base_pay) %>% round(digits = 2),
             mean_tip = mean(tip) %>% round(digits = 2),
-            mean_total = mean(total) %>% round(digits = 2))
+            mean_total = mean(total) %>% round(digits = 2)) %>% 
+  add_column(df_dashes %>% group_by(day) %>%
+               summarize(money = sum(earnings), time = sum(total_time)) %>%
+               transmute(hourly = round(money/time, digits = 2)))
+
+
 ```
 
 
 ```{r}
-weekday_summary %>% ggplot(aes(x = day, y = mean_tip, fill = mean_tip)) +
+weekday_summary %>% ggplot(aes(x = day, y = hourly, fill = hourly)) +
   geom_col() +
   labs(x = "",
        y = "Average Tip ($)") +
