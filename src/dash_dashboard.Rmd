@@ -108,6 +108,35 @@ valueBox(value = total_hours,
 
 Row {data-width=150}
 -----------------------------------------------------------------------
+### Miles
+
+```{r}
+total_miles <- sum(df_dashes$miles)
+valueBox(value = total_miles,
+         caption = "Miles",
+         color = "lightpink")
+```
+
+### Tips
+
+```{r}
+total_tips <- sum(df_deliveries$tip) %>% as_dollar()
+valueBox(value = total_tips,
+         caption = "Total Tips",
+         color = "lightgreen")
+```
+
+### Active Time
+
+```{r}
+total_dash <- "NA"
+valueBox(value = total_dash,
+         caption = "Total Active Time",
+         color = "lightblue")
+```
+
+Row {data-width=150}
+-----------------------------------------------------------------------
 ### Restaurants
 
 ```{r}
@@ -126,12 +155,12 @@ valueBox(value = total_base,
          color = "lightgreen")
 ```
 
-### Dash Time
+### Idle Time
 
 ```{r}
 total_dash <- "NA"
 valueBox(value = total_dash,
-         caption = "Total Dash Time",
+         caption = "Total Idle Time",
          color = "lightblue")
 ```
 
