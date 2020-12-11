@@ -1,22 +1,20 @@
 ---
-title: "R Notebook"
-output: html_notebook
+title: "Dashing"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: fill
 ---
 
-
-```{r, include = FALSE}
+```{r setup, include=FALSE}
+library(flexdashboard)
 library(lubridate)
 library(tidyverse)
 library(readxl)
-```
 
-```{r, include = FALSE}
 df_dashes <- read_excel(path = "../data/raw_data.xlsx", sheet = "days")
 df_deliveries <- read_excel(path = "../data/raw_data.xlsx", sheet = "deliveries")
-```
 
-
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
 df_dashes <- df_dashes %>% mutate(
   day = weekdays(as.Date(df_dashes$date)),
   .after = date)
@@ -38,9 +36,7 @@ df_dashes <- df_dashes %>%
          per_trip = round(earnings / deliveries, 2),
          per_hour = round(earnings / total_time, 2),
          .after = earnings)
-```
 
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
 df_deliveries <- df_deliveries %>% 
   mutate(total = base_pay + tip,
          .after = tip,
@@ -69,23 +65,62 @@ weekday_summary <- df_deliveries %>% group_by(day) %>%
   add_column(df_dashes %>% group_by(day) %>%
                summarize(money = sum(earnings), time = sum(total_time)) %>%
                transmute(hourly = round(money/time, digits = 2)))
-
-
 ```
 
+Totals {data-icon="fa-globe"}
+===
+Row {data-width=150}
+-----------------------------------------------------------------------
+
+### Deliveries
 
 ```{r}
-weekday_summary %>% ggplot(aes(x = day, y = hourly, fill = hourly)) +
-  geom_col() +
-  labs(x = "",
-       y = "Average Tip ($)") +
-  theme_light()
+total_deliveries <- nrow(df_deliveries)
+valueBox(value = total_deliveries,
+         caption = "Total Deliveries",
+         color = "red",
+         icon = "fa-car")
 ```
+
+### Earnings
 
 ```{r}
-df_dashes %>% summarize(tot_hrs = sum(total_time),
-                        tot_pay = sum(earnings),
-                        avg_hrly = tot_pay/tot_hrs)
+total_earn <- sum(df_deliveries$total)
+total_earn_str <- paste0("$", total_earn)
+valueBox(value = total_earn_str,
+         caption = "Total Earnings",
+         color = "lightgreen",
+         icon = "fa-money-bill-wave-alt")
+```
+
+### Hours
+
+```{r}
+total_hours <- sum(df_dashes$total_time)
+valueBox(value = total_hours,
+         caption = "Total Hours",
+         color = "lightblue",
+         icon = "fa-user-clock")
 ```
 
 
+Weekdays
+===
+Row {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r}
+
+```
+
+### Chart C
+
+```{r}
+
+```
+
+
+Restaurants
+===
