@@ -71,7 +71,7 @@ as_dollar <- function(stri) {
 }
 ```
 
-Totals {data-icon="fa-globe"}
+Totals {data-icon="glyphicon-globe"}
 ===
 Row {data-width=150}
 -----------------------------------------------------------------------
@@ -91,7 +91,7 @@ valueBox(value = total_deliveries,
 ```{r}
 total_earn <- sum(df_deliveries$total) %>% as_dollar()
 valueBox(value = total_earn,
-         caption = "Total Earnings",
+         caption = "Earnings",
          color = "green",
          icon = "fa-money-bill-wave-alt")
 ```
@@ -101,7 +101,7 @@ valueBox(value = total_earn,
 ```{r}
 total_hours <- sum(df_dashes$total_time)
 valueBox(value = total_hours,
-         caption = "Total Hours",
+         caption = "Hours",
          color = "blue",
          icon = "fa-stopwatch")
 ```
@@ -122,7 +122,7 @@ valueBox(value = total_miles,
 ```{r}
 total_tips <- sum(df_deliveries$tip) %>% as_dollar()
 valueBox(value = total_tips,
-         caption = "Total Tips",
+         caption = "Tips",
          color = "lightgreen")
 ```
 
@@ -131,7 +131,7 @@ valueBox(value = total_tips,
 ```{r}
 total_dash <- "NA"
 valueBox(value = total_dash,
-         caption = "Total Active Time",
+         caption = "Active Time",
          color = "lightblue")
 ```
 
@@ -151,7 +151,7 @@ valueBox(value = total_places,
 ```{r}
 total_base <- sum(df_deliveries$base_pay) %>% as_dollar()
 valueBox(value = total_base,
-         caption = "Total Base Pay",
+         caption = "Base Pay",
          color = "lightgreen")
 ```
 
@@ -160,7 +160,7 @@ valueBox(value = total_base,
 ```{r}
 total_dash <- "NA"
 valueBox(value = total_dash,
-         caption = "Total Idle Time",
+         caption = "Idle Time",
          color = "lightblue")
 ```
 
