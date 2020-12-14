@@ -60,13 +60,17 @@ places_summary <- df_deliveries %>% group_by(place) %>%
             mean_total = mean(total) %>% round(digits = 2))
 
 weekday_summary <- df_deliveries %>% group_by(day) %>% 
-  summarize(count = n(),
+  summarize(delivery_count = n(),
             mean_base = mean(base_pay) %>% round(digits = 2),
             mean_tip = mean(tip) %>% round(digits = 2),
             mean_total = mean(total) %>% round(digits = 2)) %>% 
   add_column(df_dashes %>% group_by(day) %>%
                summarize(money = sum(earnings), time = sum(total_time)) %>%
-               transmute(hourly = round(money/time, digits = 2)))
+               transmute(hourly = round(money/time, digits = 2))) %>% 
+  add_column(df_dashes %>% group_by(day) %>% 
+               summarize(count = n()) %>% 
+               select(count),
+             .after = "day")
 
 as_dollar <- function(stri) {
   paste0("$", stri)
@@ -167,6 +171,12 @@ valueBox(value = total_dash,
          caption = "Idle Time",
          color = "lightblue")
 ```
+
+Dash Stats
+=======================================================================
+Row {data-width=150}
+-----------------------------------------------------------------------
+
 
 Superlatives
 =======================================================================
