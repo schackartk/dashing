@@ -73,6 +73,11 @@ weekday_summary <- df_deliveries %>% group_by(day) %>%
 
 ```
 
+```{r, echo = FALSE}
+paste0("Total Number of Dashes: ", nrow(df_deliveries))
+paste0("Total Earnings: ", sum(df_deliveries$total))
+```
+
 
 ```{r}
 weekday_summary %>% ggplot(aes(x = day, y = hourly, fill = hourly)) +
