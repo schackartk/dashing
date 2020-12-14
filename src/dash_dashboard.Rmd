@@ -8,6 +8,8 @@ output:
 
 ```{r setup, include=FALSE}
 library(flexdashboard)
+library(glue)
+library(kableExtra)
 library(lubridate)
 library(tidyverse)
 library(readxl)
@@ -72,7 +74,7 @@ as_dollar <- function(stri) {
 ```
 
 Totals {data-icon="glyphicon-globe"}
-===
+=======================================================================
 Row {data-width=150}
 -----------------------------------------------------------------------
 
@@ -165,7 +167,7 @@ valueBox(value = total_dash,
 ```
 
 Weekdays {data-icon="fa-calendar"}
-===
+=======================================================================
 Row {data-width=350}
 -----------------------------------------------------------------------
 
@@ -183,4 +185,13 @@ Row {data-width=350}
 
 
 Restaurants {data-icon="fa-utensils"}
-===
+=======================================================================
+
+```{r}
+places_summary %>% kbl() %>%
+  kable_paper("striped", full_width = F) %>%
+  scroll_box(height = "100%")
+  
+
+```
+
