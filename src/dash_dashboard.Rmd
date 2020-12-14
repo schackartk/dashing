@@ -110,6 +110,7 @@ valueBox(value = total_hours,
 
 Row {data-width=150}
 -----------------------------------------------------------------------
+
 ### Miles
 
 ```{r}
@@ -139,6 +140,7 @@ valueBox(value = total_dash,
 
 Row {data-width=150}
 -----------------------------------------------------------------------
+
 ### Restaurants
 
 ```{r}
@@ -166,8 +168,24 @@ valueBox(value = total_dash,
          color = "lightblue")
 ```
 
+Superlatives
+=======================================================================
+
+Row {data-width=150}
+-----------------------------------------------------------------------
+
+### Best Dash Hourly
+```{r}
+most_hourly <- max(df_dashes$per_hour)
+most_hourly_date <- df_dashes$date[df_dashes$per_hour == most_hourly]
+valueBox(value = paste0(as_dollar(most_hourly),"/hr"),
+         caption = glue("Highest hourly rate Dash ({most_hourly_date})"),
+         color = "lightblue")
+```
+
 Weekdays {data-icon="fa-calendar"}
 =======================================================================
+
 Row {data-width=350}
 -----------------------------------------------------------------------
 
@@ -184,8 +202,42 @@ Row {data-width=350}
 ```
 
 
-Restaurants {data-icon="fa-utensils"}
+Merchants {data-icon="fa-utensils"}
 =======================================================================
+
+Row {data-width=150}
+-----------------------------------------------------------------------
+
+### Most Deliveries
+
+```{r}
+most_dash_place_ct <- max(places_summary$count)
+most_dash_place <- places_summary$place[
+  places_summary$count == most_dash_place_ct]
+valueBox(value = paste0(most_dash_place),
+         caption = glue("Place with most deliveries ({
+                        most_dash_place_ct
+         })"),
+         color = "lightblue")
+```
+
+### Most Deliveries
+
+```{r}
+most_dash_place_ct <- max(places_summary$count)
+most_dash_place <- places_summary$place[
+  places_summary$count == most_dash_place_ct]
+valueBox(value = paste0(most_dash_place),
+         caption = glue("Place with most deliveries ({
+                        most_dash_place_ct
+         })"),
+         color = "lightblue")
+```
+
+Row {data-width=150}
+-----------------------------------------------------------------------
+
+### Summary Table
 
 ```{r}
 places_summary %>% kbl() %>%
