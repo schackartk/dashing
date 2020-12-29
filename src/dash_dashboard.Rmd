@@ -143,8 +143,9 @@ valueBox(value = total_miles,
 ```{r}
 total_tips <- sum(df_deliveries$tip)
 total_tips_str <- total_tips %>% as_dollar()
+tips_pct <- 100 * round(total_tips / total_earn, digits = 2)
 valueBox(value = total_tips_str,
-         caption = "Tips",
+         caption = str_glue("Tips ({tips_pct}%)"),
          color = "lightgreen",
          icon = "fa-hand-holding-usd")
 ```
@@ -153,9 +154,12 @@ valueBox(value = total_tips_str,
 
 ```{r}
 active_hours <- sum(df_dashes$active_hr)
+active_pct <- 100 * round(active_hours / total_hours,
+                    digits = 2)
 valueBox(value = round(active_hours, digits = 2),
-         caption = "Active Time",
-         color = "lightblue")
+         caption = str_glue("Active Time ({active_pct}%)"),
+         color = "lightblue",
+         icon = "fa-walking")
 ```
 
 Row {data-width=150}
@@ -177,8 +181,9 @@ valueBox(value = total_places,
 ```{r}
 total_base <- sum(df_deliveries$base_pay)
 total_base_str <- total_base %>% as_dollar()
+base_pct <- 100 * round(total_base / total_earn, digits = 2)
 valueBox(value = total_base_str,
-         caption = "Base Pay",
+         caption = str_glue("Base Pay ({base_pct}%)"),
          color = "lightgreen",
          icon = "fa-money-check-alt")
 ```
@@ -187,9 +192,11 @@ valueBox(value = total_base_str,
 
 ```{r}
 idle_hours <- total_hours - active_hours
+idle_pct <- 100 * round(idle_hours / total_hours, digits = 2)
 valueBox(value = round(idle_hours, digits = 2),
-         caption = "Idle Time",
-         color = "lightblue")
+         caption = str_glue("Idle Time ({idle_pct}%)"),
+         color = "lightblue",
+         icon = "fa-blind")
 ```
 
 
