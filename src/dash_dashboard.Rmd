@@ -14,6 +14,17 @@ library(lubridate)
 library(tidyverse)
 library(readxl)
 
+as_dollar <- function(stri) {
+  paste0("$", stri)
+}
+
+as_hour <- function(stri) {
+  stri %>% paste0(":00") %>% hms() %>% as.duration() %>% as.numeric("hours")
+}
+```
+
+
+```{r wrangling, include=FALSE}
 df_dashes <- read_excel(path = "../data/raw_data.xlsx", sheet = "days")
 df_deliveries <- read_excel(path = "../data/raw_data.xlsx", sheet = "deliveries")
 
@@ -76,14 +87,6 @@ weekday_summary <- df_deliveries %>% group_by(day) %>%
                summarize(count = n()) %>% 
                select(count),
              .after = "day")
-
-as_dollar <- function(stri) {
-  paste0("$", stri)
-}
-
-as_hour <- function(stri) {
-  stri %>% paste0(":00") %>% hms() %>% as.duration() %>% as.numeric("hours")
-}
 ```
 
 Totals {data-icon="glyphicon-globe"}
