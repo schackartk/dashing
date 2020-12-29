@@ -152,8 +152,8 @@ valueBox(value = total_tips_str,
 ### Active Time
 
 ```{r}
-total_dash <- "NA"
-valueBox(value = total_dash,
+active_hours <- sum(df_dashes$active_hr)
+valueBox(value = round(active_hours, digits = 2),
          caption = "Active Time",
          color = "lightblue")
 ```
@@ -186,8 +186,8 @@ valueBox(value = total_base_str,
 ### Idle Time
 
 ```{r}
-total_dash <- "NA"
-valueBox(value = total_dash,
+idle_hours <- total_hours - active_hours
+valueBox(value = round(idle_hours, digits = 2),
          caption = "Idle Time",
          color = "lightblue")
 ```
