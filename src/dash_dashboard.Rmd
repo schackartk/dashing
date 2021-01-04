@@ -54,7 +54,7 @@ df_dashes <- df_dashes %>%
          .after = earnings)
 
 df_deliveries <- df_deliveries %>% 
-  mutate(total = base_pay + tip,
+  mutate(total = base_pay + tip + peak_pay,
          .after = tip,
          day = weekdays(as.Date(df_deliveries$date)))
 
@@ -199,6 +199,18 @@ valueBox(value = round(idle_hours, digits = 2),
          icon = "fa-blind")
 ```
 
+Row {data-width=150}
+-----------------------------------------------------------------------
+
+### Dashes
+
+```{r}
+total_dashes <- df_dashes %>% nrow()
+valueBox(value = total_dashes,
+         caption = "Dashes",
+         color = "lightpink",
+         icon = "fa-car")
+```
 
 Dash Stats
 =======================================================================
