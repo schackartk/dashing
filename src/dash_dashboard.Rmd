@@ -209,7 +209,29 @@ total_dashes <- df_dashes %>% nrow()
 valueBox(value = total_dashes,
          caption = "Dashes",
          color = "lightpink",
-         icon = "fa-car")
+         icon = "fa-road")
+```
+
+
+### Peak Pay
+
+```{r}
+total_peak <- sum(df_deliveries$peak_pay)
+total_peak_str <- total_peak %>% as_dollar()
+peak_pct <- 100 * round(total_peak / total_earn, digits = 2)
+valueBox(value = total_peak_str,
+         caption = str_glue("Peak Pay ({peak_pct}%)"),
+         color = "lightgreen",
+         icon = "fa-coins")
+```
+
+### Idle Time
+
+```{r}
+
+valueBox(value = "NA",
+         caption = str_glue(""),
+         color = "lightblue")
 ```
 
 Dash Stats
