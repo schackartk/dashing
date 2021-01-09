@@ -63,10 +63,6 @@ df_deliveries$day <- factor(df_deliveries$day,
                                        "Wednesday", "Thursday", "Friday",
                                        "Saturday"))
 
-# I want to add in SD or 95% CI on the below stats,
-# but need to consider if n should be calculated based on the number
-# of Fridays or based on the number of deliveries
-
 places_summary <- df_deliveries %>% group_by(place) %>% 
   summarize(count = n(),
             mean_base = mean(base_pay) %>% round(digits = 2),
