@@ -21,11 +21,21 @@ as_dollar <- function(stri) {
 as_hour <- function(stri) {
   stri %>% paste0(":00") %>% hms() %>% as.duration() %>% as.numeric("hours")
 }
-```
 
+header_blue <- "#62d0f5"
+sub_blue <- "#9fe4f5"
+header_green <- "#62f576"
+sub_green <- "#9ff5ab"
+header_red <- "#f56262"
+sub_red <- "#f59f9f"
+```
 
 ```{r wrangling, include=FALSE}
 df_dashes <- read_excel(path = "../data/raw_data.xlsx", sheet = "days")
+
+#df_dashes 10-13, 10-18, 10-23 uncertain miles, time and amt good
+
+
 df_deliveries <- read_excel(path = "../data/raw_data.xlsx", sheet = "deliveries")
 
 df_dashes <- df_dashes %>% mutate(
@@ -96,7 +106,7 @@ Row {data-width=150}
 total_deliveries <- df_deliveries %>% filter(!is.na(place)) %>% nrow()
 valueBox(value = total_deliveries,
          caption = "Deliveries",
-         color = "red",
+         color = header_red,
          icon = "fa-car")
 ```
 
@@ -107,7 +117,7 @@ total_earn <- sum(df_deliveries$total)
 total_earn_str <- total_earn %>% as_dollar()
 valueBox(value = total_earn_str,
          caption = "Earnings",
-         color = "green",
+         color = header_green,
          icon = "fa-money-bill-wave-alt")
 ```
 
@@ -117,7 +127,7 @@ valueBox(value = total_earn_str,
 total_hours <- sum(df_dashes$total_time)
 valueBox(value = total_hours,
          caption = "Hours",
-         color = "blue",
+         color = header_blue,
          icon = "fa-stopwatch")
 ```
 
@@ -130,7 +140,7 @@ Row {data-width=150}
 total_miles <- sum(df_dashes$miles)
 valueBox(value = total_miles,
          caption = "Miles",
-         color = "lightpink",
+         color = sub_red,
          icon = "fa-map")
 ```
 
@@ -142,7 +152,7 @@ total_tips_str <- total_tips %>% as_dollar()
 tips_pct <- 100 * round(total_tips / total_earn, digits = 2)
 valueBox(value = total_tips_str,
          caption = str_glue("Tips ({tips_pct}%)"),
-         color = "lightgreen",
+         color = sub_green,
          icon = "fa-hand-holding-usd")
 ```
 
@@ -154,7 +164,7 @@ active_pct <- 100 * round(active_hours / total_hours,
                     digits = 2)
 valueBox(value = round(active_hours, digits = 2),
          caption = str_glue("Active Time ({active_pct}%)"),
-         color = "lightblue",
+         color = sub_blue,
          icon = "fa-walking")
 ```
 
@@ -167,7 +177,7 @@ Row {data-width=150}
 total_places <- places_summary %>% n_distinct()
 valueBox(value = total_places,
          caption = "Merchants",
-         color = "lightpink",
+         color = sub_red,
          icon = "fa-map-marked-alt")
 ```
 
@@ -180,7 +190,7 @@ total_base_str <- total_base %>% as_dollar()
 base_pct <- 100 * round(total_base / total_earn, digits = 2)
 valueBox(value = total_base_str,
          caption = str_glue("Base Pay ({base_pct}%)"),
-         color = "lightgreen",
+         color = sub_green,
          icon = "fa-money-check-alt")
 ```
 
@@ -191,7 +201,7 @@ idle_hours <- total_hours - active_hours
 idle_pct <- 100 * round(idle_hours / total_hours, digits = 2)
 valueBox(value = round(idle_hours, digits = 2),
          caption = str_glue("Idle Time ({idle_pct}%)"),
-         color = "lightblue",
+         color = sub_blue,
          icon = "fa-blind")
 ```
 
@@ -204,7 +214,7 @@ Row {data-width=150}
 total_dashes <- df_dashes %>% nrow()
 valueBox(value = total_dashes,
          caption = "Dashes",
-         color = "lightpink",
+         color = sub_red,
          icon = "fa-road")
 ```
 
@@ -217,17 +227,24 @@ total_peak_str <- total_peak %>% as_dollar()
 peak_pct <- 100 * round(total_peak / total_earn, digits = 2)
 valueBox(value = total_peak_str,
          caption = str_glue("Peak Pay ({peak_pct}%)"),
-         color = "lightgreen",
+         color = sub_green,
          icon = "fa-coins")
 ```
 
-### Idle Time
+### Dashing Duration
 
 ```{r}
+dash_dur <- interval(min(df_dashes$date),
+                        max(df_dashes$date))
 
-valueBox(value = "NA",
-         caption = str_glue(""),
-         color = "lightblue")
+dash_months <- dash_dur %/% months(1)
+
+dash_weeks <- dash_dur %% months(1) %/% weeks(1)
+
+valueBox(value = str_glue("{dash_months} mo, {dash_weeks} wk"),
+         caption = str_glue("Time as a Dasher"),
+         color = sub_blue,
+         icon = "fa-calendar-alt")
 ```
 
 Dash Stats
@@ -242,7 +259,7 @@ avg_per_deliv <- total_earn / total_deliveries
 avg_per_deliv_str <- avg_per_deliv %>% round(digits = 2) %>% as_dollar
 valueBox(value = str_glue("{avg_per_deliv_str}/delivery"),
          caption = "Average Earnings per Delivery",
-         color = "red",
+         color = header_red,
          icon = "fa-utensils")
 ```
 
@@ -253,7 +270,7 @@ avg_hourly <- total_earn / total_hours
 avg_hourly_str <- avg_hourly %>% round(digits = 2) %>% as_dollar()
 valueBox(value = str_glue("{avg_hourly_str}/hour"),
          caption = "Average Hourly rate",
-         color = "green",
+         color = header_green,
          icon = "fa-money-bill-wave-alt")
 ```
 
@@ -264,7 +281,7 @@ avg_per_mile <- total_earn / total_miles
 avg_per_mile_str <- avg_per_mile %>% round(digits = 2) %>% as_dollar
 valueBox(value = str_glue("{avg_per_mile_str}/mile"),
          caption = "Average Earnings per Mile",
-         color = "blue",
+         color = header_blue,
          icon = "fa-car")
 ```
 
@@ -309,8 +326,6 @@ Row {data-width=150}
 -----------------------------------------------------------------------
 
 ### Most Deliveries
-
-
 
 Row {data-width=150}
 -----------------------------------------------------------------------
