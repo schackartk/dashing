@@ -2,7 +2,7 @@
 title: "Dashing"
 output: 
   flexdashboard::flex_dashboard:
-    orientation: rows
+    orientation: columns
     vertical_layout: fill
 ---
 
@@ -97,7 +97,7 @@ weekday_summary <- df_deliveries %>% group_by(day) %>%
 
 Totals {data-icon="glyphicon-globe"}
 =======================================================================
-Row {data-width=150}
+Column {data-width=150}
 -----------------------------------------------------------------------
 
 ### Deliveries
@@ -110,6 +110,39 @@ valueBox(value = total_deliveries,
          icon = "fa-car")
 ```
 
+### Miles
+
+```{r}
+total_miles <- sum(df_dashes$miles)
+valueBox(value = total_miles,
+         caption = "Miles",
+         color = sub_red,
+         icon = "fa-map")
+```
+
+### Restaurants
+
+```{r}
+total_places <- places_summary %>% n_distinct()
+valueBox(value = total_places,
+         caption = "Merchants",
+         color = sub_red,
+         icon = "fa-map-marked-alt")
+```
+
+### Dashes
+
+```{r}
+total_dashes <- df_dashes %>% nrow()
+valueBox(value = total_dashes,
+         caption = "Dashes",
+         color = sub_red,
+         icon = "fa-road")
+```
+
+Column {data-width=150}
+-----------------------------------------------------------------------
+
 ### Earnings
 
 ```{r}
@@ -119,29 +152,6 @@ valueBox(value = total_earn_str,
          caption = "Earnings",
          color = header_green,
          icon = "fa-money-bill-wave-alt")
-```
-
-### Hours
-
-```{r}
-total_hours <- sum(df_dashes$total_time)
-valueBox(value = total_hours,
-         caption = "Hours",
-         color = header_blue,
-         icon = "fa-stopwatch")
-```
-
-Row {data-width=150}
------------------------------------------------------------------------
-
-### Miles
-
-```{r}
-total_miles <- sum(df_dashes$miles)
-valueBox(value = total_miles,
-         caption = "Miles",
-         color = sub_red,
-         icon = "fa-map")
 ```
 
 ### Tips
@@ -156,32 +166,6 @@ valueBox(value = total_tips_str,
          icon = "fa-hand-holding-usd")
 ```
 
-### Active Time
-
-```{r}
-active_hours <- sum(df_dashes$active_hr)
-active_pct <- 100 * round(active_hours / total_hours,
-                    digits = 2)
-valueBox(value = round(active_hours, digits = 2),
-         caption = str_glue("Active Time ({active_pct}%)"),
-         color = sub_blue,
-         icon = "fa-walking")
-```
-
-Row {data-width=150}
------------------------------------------------------------------------
-
-### Restaurants
-
-```{r}
-total_places <- places_summary %>% n_distinct()
-valueBox(value = total_places,
-         caption = "Merchants",
-         color = sub_red,
-         icon = "fa-map-marked-alt")
-```
-
-
 ### Base Pay
 
 ```{r}
@@ -194,31 +178,6 @@ valueBox(value = total_base_str,
          icon = "fa-money-check-alt")
 ```
 
-### Idle Time
-
-```{r}
-idle_hours <- total_hours - active_hours
-idle_pct <- 100 * round(idle_hours / total_hours, digits = 2)
-valueBox(value = round(idle_hours, digits = 2),
-         caption = str_glue("Idle Time ({idle_pct}%)"),
-         color = sub_blue,
-         icon = "fa-blind")
-```
-
-Row {data-width=150}
------------------------------------------------------------------------
-
-### Dashes
-
-```{r}
-total_dashes <- df_dashes %>% nrow()
-valueBox(value = total_dashes,
-         caption = "Dashes",
-         color = sub_red,
-         icon = "fa-road")
-```
-
-
 ### Peak Pay
 
 ```{r}
@@ -229,6 +188,42 @@ valueBox(value = total_peak_str,
          caption = str_glue("Peak Pay ({peak_pct}%)"),
          color = sub_green,
          icon = "fa-coins")
+```
+
+Column {data-width=150}
+-----------------------------------------------------------------------
+
+### Hours
+
+```{r}
+total_hours <- sum(df_dashes$total_time)
+valueBox(value = total_hours,
+         caption = "Hours",
+         color = header_blue,
+         icon = "fa-stopwatch")
+```
+
+### Active Time
+
+```{r}
+active_hours <- sum(df_dashes$active_hr)
+active_pct <- 100 * round(active_hours / total_hours,
+                    digits = 2)
+valueBox(value = round(active_hours, digits = 2),
+         caption = str_glue("Active Time ({active_pct}%)"),
+         color = sub_blue,
+         icon = "fa-walking")
+```
+
+### Idle Time
+
+```{r}
+idle_hours <- total_hours - active_hours
+idle_pct <- 100 * round(idle_hours / total_hours, digits = 2)
+valueBox(value = round(idle_hours, digits = 2),
+         caption = str_glue("Idle Time ({idle_pct}%)"),
+         color = sub_blue,
+         icon = "fa-blind")
 ```
 
 ### Dashing Duration
