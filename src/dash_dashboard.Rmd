@@ -100,6 +100,19 @@ weekday_summary <- df_deliveries %>% group_by(day) %>%
                summarize(count = n()) %>% 
                select(count),
              .after = "day")
+
+tax_df <- df_dashes %>%
+  select(date, miles, earnings) %>% 
+  filter(date > as_date("2020-10-23")) %>% 
+  mutate(deduction = case_when(
+    year(date) == year("2020-01-01") ~ (miles * 0.575),
+    year(date) == year("2021-01-01") ~ (miles * 0.56),
+  ),
+  taxable = earnings - deduction,
+  taxes = case_when(taxable > 0 ~ round(0.3 * taxable, digits = 2),
+                    taxable <= 0 ~ 0
+  ),
+  net = earnings - taxes)
 ```
 
 Totals {data-icon="glyphicon-globe"}
