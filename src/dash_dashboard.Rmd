@@ -104,6 +104,7 @@ weekday_summary <- df_deliveries %>% group_by(day) %>%
 
 Totals {data-icon="glyphicon-globe"}
 =======================================================================
+
 Column {data-width=150}
 -----------------------------------------------------------------------
 
@@ -251,7 +252,8 @@ valueBox(value = str_glue("{dash_months} mo, {dash_weeks} wk"),
 
 Dash Stats
 =======================================================================
-Row {data-width=150}
+
+Column {data-width=150}
 -----------------------------------------------------------------------
 
 ### By Delivery
@@ -265,6 +267,9 @@ valueBox(value = str_glue("{avg_per_deliv_str}/delivery"),
          icon = "fa-utensils")
 ```
 
+Column {data-width=150}
+-----------------------------------------------------------------------
+
 ### Hourly
 
 ```{r}
@@ -275,6 +280,9 @@ valueBox(value = str_glue("{avg_hourly_str}/hour"),
          color = header_green,
          icon = "fa-money-bill-wave-alt")
 ```
+
+Column {data-width=150}
+-----------------------------------------------------------------------
 
 ### By Mile
 
@@ -355,12 +363,13 @@ places_summary %>%
   slice_max(order_by = mean_tip, n = 10) %>% 
   mutate(place = factor(place, levels = rev(place))) %>%
   mutate(place = fct_reorder(place, mean_tip)) %>%
-  ggplot(aes(x = mean_tip, y = place, label = mean_tip)) +
+  ggplot(aes(x = mean_tip, y = place,
+             label = sprintf("$%0.2f", round(mean_tip, digits = 2)))) +
   geom_col() +
-  geom_label(x = 0.5) +
+  geom_label(x = 0.8) +
   nb_theme +
   theme(axis.text.x = element_blank()) +
-  labs(title = "Average Tips by Place",
+  labs(title = "Average Tip by Place",
        subtitle = "For places with more than 1 delivery",
        x = "",
        y = "")
