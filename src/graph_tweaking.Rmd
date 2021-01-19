@@ -1,0 +1,80 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r setup}
+library(tidyverse)
+library(mdthemes)
+
+nb_theme <- theme_light() +
+  as_md_theme(theme(
+    plot.title = element_text(hjust = 0.5),
+    plot.caption = element_text(hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5)))
+```
+
+
+```{r}
+library(Hmisc)
+library(scales)
+
+
+df_deliveries %>% group_by(peak_pay) %>% 
+  dplyr::summarize(mean_base = mean(base_pay),
+            n_base = n(),
+            base_sd = sd(base_pay),
+            base_se = base_sd / sqrt(n_base)) %>%
+  ggplot(aes(x = peak_pay, y = mean_base)) +
+  #geom_boxplot(data = df_deliveries,
+  #            aes(x = peak_pay, y = base_pay, color = factor(peak_pay)),
+  #            outlier.shape = NA) +
+  geom_violin(data = df_deliveries,
+              aes(x = peak_pay, y = base_pay, color = factor(peak_pay))) +
+  geom_jitter(data = df_deliveries,
+              aes(x = peak_pay, y = base_pay, color = factor(peak_pay)),
+              alpha = 0.25,
+              width = 0.2) +
+  geom_errorbar(aes(ymin = mean_base-base_se,
+                   ymax = mean_base+base_se),
+               width = 0.5) +
+  nb_theme +
+  theme(legend.position = "nonee") +
+  scale_y_continuous(labels = dollar_format()) +
+  scale_x_continuous(labels = dollar_format()) +
+  labs(title = "Does base pay decrease with 'peak pay'?",
+       x = "Peak pay",
+       y = "Base pay")
+```
+
+```{r pay_over_time}
+df_dashes$date <- df_dashes$date %>% as_date()
+
+df_dashes %>% ggplot(aes(x = date, y = per_hour)) +
+  geom_line() +
+  geom_point() +
+  geom_point(data = df_deliveries,
+             aes(x = as_date(date), y = total),
+             color = "gray",
+             alpha = 0.5) +
+  nb_theme +
+  scale_y_continuous(labels = dollar_format()) +
+  labs(x = "",
+       y = "Average Hourly Earnings")
+```
+```{r}
+places_summary %>%
+  slice_max(order_by = count, n = 10) %>% 
+  mutate(place = factor(place, levels = rev(place))) %>%
+  mutate(place = fct_reorder(place, count)) %>%
+  ggplot(aes(x = count, y = place, label = count)) +
+  geom_col() +
+  geom_label(x = 0.5) +
+  nb_theme +
+  theme(axis.text.x = element_blank()) +
+  labs(title = "Number of Deliveries by Place",
+       x = "",
+       y = "")
+```
+
