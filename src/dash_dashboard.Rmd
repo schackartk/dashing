@@ -40,18 +40,7 @@ places_summary <- df_deliveries %>% summarize_places()
 
 weekday_summary <- summarize_weekday(df_deliveries, df_dashes)
 
-tax_df <- df_dashes %>%
-  select(date, miles, earnings) %>% 
-  filter(date > as_date("2020-10-23")) %>% 
-  mutate(deduction = case_when(
-    year(date) == 2020 ~ (miles * 0.575),
-    year(date) == 2021 ~ (miles * 0.56),
-  ),
-  taxable = earnings - deduction,
-  taxes = case_when(taxable > 0 ~ round(0.3 * taxable, digits = 2),
-                    taxable <= 0 ~ 0
-  ),
-  net = earnings - taxes)
+tax_df <- df_dashes %>% taxes()
 ```
 
 Totals {data-icon="glyphicon-globe"}

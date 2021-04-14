@@ -85,7 +85,7 @@ wrangle_deliveries <- function(df) {
 
 #' Create summary dataframe by merchant
 #'
-#' @param df 
+#' @param df df_deliveries
 #'
 #' @return
 #' @export
@@ -124,4 +124,24 @@ summarize_weekday <- function(df_deliveries, df_dashes) {
                          dplyr::summarize(count = n()) %>% 
                          select(count),
                        .after = "day")
+}
+
+#' Estimate taxes
+#'
+#' @param df df_dashes
+#' @param rate 
+#'
+#' @return
+#' @export
+taxes <- function(df, rate = 0.3) {
+  df %>% dplyr::select(date, miles, earnings) %>% 
+    dplyr::filter(date > as_date("2020-10-23")) %>% 
+    dplyr::mutate(deduction = dplyr::case_when(
+      year(date) == 2020 ~ (miles * 0.575),
+      year(date) == 2021 ~ (miles * 0.56)),
+      taxable = earnings - deduction,
+      taxes = dplyr::case_when(
+        taxable > 0 ~ round(rate * taxable, digits = 2),
+        taxable <= 0 ~ 0),
+      net = earnings - taxes)
 }
