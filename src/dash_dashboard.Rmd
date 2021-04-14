@@ -24,34 +24,17 @@ source("style.R")
 ```
 
 ```{r wrangling, include=FALSE}
+#df_dashes 10-13, 10-18, 10-23 uncertain miles, time and amt good
+
 df_dashes <- read_excel(path = "../data/raw_data.xlsx",
                         sheet = "days") %>% 
   wrangle_dashes()
 
+df_deliveries <- read_excel(path = "../data/raw_data.xlsx",
+                            sheet = "deliveries") %>% 
+  wrangle_deliveries()
 
-#df_dashes 10-13, 10-18, 10-23 uncertain miles, time and amt good
-
-
-df_deliveries <- read_excel(path = "../data/raw_data.xlsx", sheet = "deliveries")
-
-
-
-df_deliveries <- df_deliveries %>% 
-  mutate(total = base_pay + tip + peak_pay,
-         .after = tip,
-         day = weekdays(as.Date(df_deliveries$date)))
-
-df_deliveries$day <- factor(df_deliveries$day,
-                            levels = c("Sunday", "Monday", "Tuesday",
-                                       "Wednesday", "Thursday", "Friday",
-                                       "Saturday"))
-
-places_summary <- df_deliveries %>% group_by(place) %>% 
-  dplyr::summarize(count = n(),
-            mean_base = mean(base_pay) %>% round(digits = 2),
-            mean_tip = mean(tip) %>% round(digits = 2),
-            mean_total = mean(total) %>% round(digits = 2)) %>% 
-  filter(!is.na(place))
+places_summary <- df_deliveries %>% summarize_places()
 
 weekday_summary <- df_deliveries %>% group_by(day) %>% 
   filter(!is.na(place)) %>% 
