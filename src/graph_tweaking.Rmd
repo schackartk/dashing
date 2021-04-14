@@ -1,10 +1,10 @@
 ---
 title: "R Notebook"
 output: html_notebook
+bibliography: references.bib
 ---
 
-
-```{r setup}
+```{r setup, include = FALSE}
 library(tidyverse)
 library(mdthemes)
 
@@ -14,7 +14,6 @@ nb_theme <- theme_light() +
     plot.caption = element_text(hjust = 0.5),
     plot.subtitle = element_text(hjust = 0.5)))
 ```
-
 
 ```{r}
 library(Hmisc)
@@ -61,8 +60,10 @@ df_dashes %>% ggplot(aes(x = date, y = per_hour)) +
   nb_theme +
   scale_y_continuous(labels = dollar_format()) +
   labs(x = "",
-       y = "Average Hourly Earnings")
+       y = "",
+       caption = "Individual Delivery Earnings in Gray (not average)")
 ```
+
 ```{r}
 places_summary %>%
   slice_max(order_by = count, n = 10) %>% 
@@ -74,6 +75,79 @@ places_summary %>%
   nb_theme +
   theme(axis.text.x = element_blank()) +
   labs(title = "Number of Deliveries by Place",
+       x = "",
+       y = "")
+```
+
+```{r}
+places_summary %>%
+  filter(count > 1) %>% 
+  slice_max(order_by = mean_tip, n = 10) %>% 
+  mutate(place = factor(place, levels = rev(place))) %>%
+  mutate(place = fct_reorder(place, mean_tip)) %>%
+  ggplot(aes(x = mean_tip, y = place,
+             label = sprintf("$%0.2f", round(mean_tip, digits = 2)))) +
+  geom_col() +
+  geom_label(x = 0.8) +
+  nb_theme +
+  theme(axis.text.x = element_blank()) +
+  labs(title = "Average Tip by Place",
+       subtitle = "For places with more than 1 delivery",
+       x = "",
+       y = "")
+```
+
+```{r}
+library(scales)
+
+weekday_summary %>% ggplot(aes(x = day, y = hourly, color = day)) +
+  geom_boxplot(data = df_dashes, aes(x = day, y = per_hour),
+             width = 0.2) +
+  geom_point(size = 2) +
+  nb_theme +
+  scale_y_continuous(limits = c(0,NA),
+                     labels = dollar_format()) +
+  labs(x = "")
+```
+```{r}
+library(scales)
+
+weekday_summary %>% ggplot(aes(x = day, y = hourly,
+                               fill = day, label = as_dollar(hourly))) +
+  geom_bar(width = 1, color = "white", stat = "identity") +
+  geom_text(nudge_y = -3) +
+  nb_theme +
+  labs(x = "")+
+  coord_polar() +
+  theme(axis.ticks.y = element_blank(),
+        axis.text.y.left = element_blank())
+```
+
+```{r}
+df_deliveries %>%
+  slice_max(order_by = tip, n = 6) %>% 
+  mutate(place = factor(place)) %>%
+  mutate(place = fct_reorder(place, tip)) %>%
+  ggplot(aes(x = tip, y = place,
+             label = sprintf("$%0.2f", tip))) +
+  geom_col() +
+  geom_label(x = 1.5) +
+  nb_theme +
+  theme(axis.text.x = element_blank()) +
+  labs(title = "Highest Tips",
+       x = "",
+       y = "")
+```
+```{r}
+df_deliveries %>%
+  arrange(tip, place) %>% 
+  ggplot(aes(x = tip, y = place,
+             label = sprintf("$%0.2f", round(tip, digits = 2)))) +
+  geom_col() +
+  geom_label(x = 1.5) +
+  nb_theme +
+  theme(axis.text.x = element_blank()) +
+  labs(title = "Highest Tips",
        x = "",
        y = "")
 ```
