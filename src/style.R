@@ -5,8 +5,8 @@ sub_green <- "#9ff5ab"
 header_red <- "#f56262"
 sub_red <- "#f59f9f"
 
-nb_theme <- theme_light() +
-  as_md_theme(theme(
-    plot.title = element_text(hjust = 0.5),
-    plot.caption = element_text(hjust = 0.5),
-    plot.subtitle = element_text(hjust = 0.5)))
+nb_theme <- ggplot2::theme_light() +
+  mdthemes::as_md_theme(
+    ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
+                   plot.caption = ggplot2::element_text(hjust = 0.5),
+                   plot.subtitle = ggplot2::element_text(hjust = 0.5)))
