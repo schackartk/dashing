@@ -15,13 +15,7 @@ library(tidyverse)
 library(readxl)
 library(mdthemes)
 
-as_dollar <- function(stri) {
-  paste0("$", stri)
-}
-
-as_hour <- function(stri) {
-  stri %>% paste0(":00") %>% hms() %>% as.duration() %>% as.numeric("hours")
-}
+source("helpers.R")
 
 header_blue <- "#62d0f5"
 sub_blue <- "#9fe4f5"
@@ -55,9 +49,15 @@ df_dashes$day <- factor(df_dashes$day,
                                    "Saturday"))
 
 df_dashes <- df_dashes %>% mutate(
-  start = ymd_hm(paste(df_dashes$date, df_dashes$time_in), tz = "MST"),
-  end = ymd_hm(paste(df_dashes$date, df_dashes$time_out), tz = "MST"),
-  total_time = round(as.numeric(difftime(end, start, units = "hours")),
+  start = ymd_hm(paste(df_dashes$date,
+                       df_dashes$time_in),
+                 tz = "MST"),
+  end = ymd_hm(paste(df_dashes$date,
+                     df_dashes$time_out),
+               tz = "MST"),
+  total_time = round(as.numeric(difftime(end,
+                                         start,
+                                         units = "hours")),
                      digits = 2),
   active_hr = as_hour(active_time),
   dash_hr = as_hour(dash_time))
