@@ -7,13 +7,17 @@ output:
 ---
 
 ```{r setup, include=FALSE}
+library(dplyr)
 library(flexdashboard)
+library(forcats)
+library(ggplot2)
 library(glue)
 library(kableExtra)
 library(lubridate)
-library(tidyverse)
+library(magrittr)
 library(readxl)
-library(mdthemes)
+library(stringr)
+library(tibble)
 
 source("helpers.R")
 source("style.R")
