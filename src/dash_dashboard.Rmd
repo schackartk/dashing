@@ -24,43 +24,17 @@ source("style.R")
 ```
 
 ```{r wrangling, include=FALSE}
-df_dashes <- read_excel(path = "../data/raw_data.xlsx", sheet = "days")
+df_dashes <- read_excel(path = "../data/raw_data.xlsx",
+                        sheet = "days") %>% 
+  wrangle_dashes()
+
 
 #df_dashes 10-13, 10-18, 10-23 uncertain miles, time and amt good
 
 
 df_deliveries <- read_excel(path = "../data/raw_data.xlsx", sheet = "deliveries")
 
-df_dashes <- df_dashes %>% mutate(
-  day = weekdays(as.Date(df_dashes$date)),
-  .after = date)
 
-df_dashes$day <- factor(df_dashes$day,
-                        levels = c("Sunday", "Monday", "Tuesday",
-                                   "Wednesday", "Thursday", "Friday",
-                                   "Saturday"))
-
-df_dashes <- df_dashes %>% mutate(
-  start = ymd_hm(paste(df_dashes$date,
-                       df_dashes$time_in),
-                 tz = "MST"),
-  end = ymd_hm(paste(df_dashes$date,
-                     df_dashes$time_out),
-               tz = "MST"),
-  total_time = round(as.numeric(difftime(end,
-                                         start,
-                                         units = "hours")),
-                     digits = 2),
-  active_hr = as_hour(active_time),
-  dash_hr = as_hour(dash_time))
-
-df_dashes <- df_dashes %>%
-  mutate(miles = odo_out - odo_in,
-         .after = odo_out) %>% 
-  mutate(per_mi = round(earnings / miles, 2),
-         per_trip = round(earnings / deliveries, 2),
-         per_hour = round(earnings / total_time, 2),
-         .after = earnings)
 
 df_deliveries <- df_deliveries %>% 
   mutate(total = base_pay + tip + peak_pay,
