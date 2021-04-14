@@ -97,3 +97,31 @@ summarize_places <- function(df) {
                      mean_total = mean(total) %>% round(digits = 2)) %>% 
     dplyr::filter(!is.na(place))
 }
+
+#' Create summary dataframe by day of the week
+#'
+#' @param df_deliveries 
+#' @param df_dashes 
+#'
+#' @return
+#' @export
+summarize_weekday <- function(df_deliveries, df_dashes) {
+  df_deliveries %>%
+    dplyr::group_by(day) %>% 
+    dplyr::filter(!is.na(place)) %>% 
+    dplyr::summarize(delivery_count = n(),
+                     mean_base = mean(base_pay) %>% round(digits = 2),
+                     mean_tip = mean(tip) %>% round(digits = 2),
+                     mean_total = mean(total) %>% round(digits = 2)) %>% 
+    tibble::add_column(df_dashes %>%
+                         dplyr::group_by(day) %>%
+                         dplyr::summarize(money = sum(earnings),
+                                          time = sum(total_time)) %>%
+                         dplyr::transmute(hourly = round(money/time,
+                                                         digits = 2))) %>% 
+    tibble::add_column(df_dashes %>%
+                         dplyr::group_by(day) %>% 
+                         dplyr::summarize(count = n()) %>% 
+                         select(count),
+                       .after = "day")
+}

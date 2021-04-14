@@ -24,6 +24,8 @@ source("style.R")
 ```
 
 ```{r wrangling, include=FALSE}
+# Custom functions for data wrangling are in helpers.R
+
 #df_dashes 10-13, 10-18, 10-23 uncertain miles, time and amt good
 
 df_dashes <- read_excel(path = "../data/raw_data.xlsx",
@@ -36,19 +38,7 @@ df_deliveries <- read_excel(path = "../data/raw_data.xlsx",
 
 places_summary <- df_deliveries %>% summarize_places()
 
-weekday_summary <- df_deliveries %>% group_by(day) %>% 
-  filter(!is.na(place)) %>% 
-  dplyr::summarize(delivery_count = n(),
-            mean_base = mean(base_pay) %>% round(digits = 2),
-            mean_tip = mean(tip) %>% round(digits = 2),
-            mean_total = mean(total) %>% round(digits = 2)) %>% 
-  add_column(df_dashes %>% group_by(day) %>%
-               dplyr::summarize(money = sum(earnings), time = sum(total_time)) %>%
-               transmute(hourly = round(money/time, digits = 2))) %>% 
-  add_column(df_dashes %>% group_by(day) %>% 
-               dplyr::summarize(count = n()) %>% 
-               select(count),
-             .after = "day")
+weekday_summary <- summarize_weekday(df_deliveries, df_dashes)
 
 tax_df <- df_dashes %>%
   select(date, miles, earnings) %>% 
