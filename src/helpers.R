@@ -78,9 +78,7 @@ wrangle_deliveries <- function(df) {
            day = weekdays(as.Date(df$date)))
   
   df$day <- factor(df$day,
-                   levels = c("Sunday", "Monday", "Tuesday",
-                              "Wednesday", "Thursday", "Friday",
-                              "Saturday"))
+                   levels = days_of_wk)
   
   df
 }
