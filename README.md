@@ -1,37 +1,27 @@
 # dashing
-Exploring my Doordash data
+Exploring my Doordash data with R.
 
-# To do
-Value boxes:
+## Data Format
 
-* Overall
-  * Overall average $/hour
-  * Overall average $/mile
-  * Overall average $/delivery
+Data is stored in an excel workbook with 2 sheets: "days" and "deliveries"
 
-* Dash
-  * Best dash in $/hr
-  * Best dash in $/mi
-  * Best dash in $/delivery
-  * Worst of the above
+#### Columns of "days" sheet
 
-* Place
-  * Best place in tips
-  * Best place in base
-  * Best place in total
-  * Worst of the above
+* `date`: *as YYYY-MM-DD*
+* `time_in`: time at beginning of dash *as hh:mm* (24 hour time) 
+* `time_out`: time at beginning of dash *as hh:mm* (24 hour time)
+* `odo_in`: odometer reading at beginning of dash *in miles*
+* `odo_out`: odometer reading at end of dash *in miles*
+* `earnings`: *in dollars*
+* `active_time`: time spent waiting for offers *as hh:mm*
+* `dash_time`: time spent on orders *as hh:mm*
+* `deliveries`: number of deliveries
 
-Other:
+#### Column of "deliveries" sheet
 
-* Mean base, tip, total by place (n>1)
+* `date`: *as YYYY-MM-DD*
+* `base_pay`: *in dollars*
+* `peak_pay`: *in dollars*
+* `tip`: *in dollars*
+* `place`:
 
-gganimate:
-
-* all dashes at the same time
-  * t = 0 at 12:00 am
-  * t = 0 at beginning of dash
-* color aes
-  * color = weekday
-  * color = speed
-  * color = $/mi from dash (or $/hr)
-  * color  = time
