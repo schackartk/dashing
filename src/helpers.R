@@ -145,3 +145,54 @@ taxes <- function(df, rate = 0.3) {
         taxable <= 0 ~ 0),
       net = earnings - taxes)
 }
+
+#' Calculate totals
+#'
+#' @param df_dashes # from wrangle_dashes()
+#' @param df_deliveries # from wrangle_deliveries()
+#'
+#' @return
+#' @export
+calculate_totals <- function(df_dashes, df_deliveries, places_summary) {
+  
+  totals <- c()
+  
+  # Totals that cannot be cross-checked
+  
+  totals['miles'] <-  sum(df_dashes$miles)
+  totals['places'] <-  places_summary %>% n_distinct()
+  totals['dashes'] <- df_dashes %>% nrow()
+  totals['tips'] <- sum(df_deliveries$tip)
+  totals['base'] <- sum(df_deliveries$base_pay)
+  totals['peak'] <- sum(df_deliveries$peak_pay)
+  totals['time'] <- sum(df_dashes$total_time)
+  totals['active'] <- sum(df_dashes$active_hr)
+  totals['idle'] <- totals['time'] - totals['active']
+  
+  # Totals that need to be cross-checked
+  
+  # Total number of deliveries
+  
+  deliveries_1 <- df_deliveries %>% filter(!is.na(place)) %>% nrow()
+  deliveries_2 <-  sum(df_dashes$deliveries)
+  
+  if (deliveries_1 != deliveries_2)
+    warning("Lifetime number of deliveries does not match.")
+  
+  totals['deliveries'] <-  deliveries_1
+    
+  
+  # Total earnings
+  
+  earnings_1 <- sum(df_deliveries$total)
+  earnings_2 <- sum(df_dashes$earnings)
+  
+  if (earnings_1 != earnings_2)
+    warning("Lifetime number of deliveries does not match")
+
+  totals['earnings'] <-  earnings_1
+  
+  
+  return(totals)
+  
+}

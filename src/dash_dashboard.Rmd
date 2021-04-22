@@ -41,6 +41,10 @@ places_summary <- df_deliveries %>% summarize_places()
 weekday_summary <- summarize_weekday(df_deliveries, df_dashes)
 
 tax_df <- df_dashes %>% taxes()
+
+totals <- calculate_totals(df_dashes,
+                           df_deliveries,
+                           places_summary)
 ```
 
 Totals {data-icon="glyphicon-globe"}
@@ -52,8 +56,7 @@ Column {data-width=150}
 ### Deliveries
 
 ```{r}
-total_deliveries <- df_deliveries %>% filter(!is.na(place)) %>% nrow()
-valueBox(value = total_deliveries,
+valueBox(value = totals['deliveries'],
          caption = "Deliveries",
          color = header_red,
          icon = "fa-car")
@@ -62,8 +65,7 @@ valueBox(value = total_deliveries,
 ### Miles
 
 ```{r}
-total_miles <- sum(df_dashes$miles)
-valueBox(value = total_miles,
+valueBox(value = totals['miles'],
          caption = "Miles",
          color = sub_red,
          icon = "fa-map")
@@ -72,8 +74,7 @@ valueBox(value = total_miles,
 ### Restaurants
 
 ```{r}
-total_places <- places_summary %>% n_distinct()
-valueBox(value = total_places,
+valueBox(value = totals['places'],
          caption = "Merchants",
          color = sub_red,
          icon = "fa-map-marked-alt")
@@ -82,8 +83,7 @@ valueBox(value = total_places,
 ### Dashes
 
 ```{r}
-total_dashes <- df_dashes %>% nrow()
-valueBox(value = total_dashes,
+valueBox(value = totals['dashes'],
          caption = "Dashes",
          color = sub_red,
          icon = "fa-road")
@@ -95,9 +95,7 @@ Column {data-width=150}
 ### Earnings
 
 ```{r}
-total_earn <- sum(df_deliveries$total)
-total_earn_str <- total_earn %>% as_dollar()
-valueBox(value = total_earn_str,
+valueBox(value = totals['earnings'] %>% as_dollar(),
          caption = "Earnings",
          color = header_green,
          icon = "fa-money-bill-wave-alt")
@@ -106,10 +104,8 @@ valueBox(value = total_earn_str,
 ### Tips
 
 ```{r}
-total_tips <- sum(df_deliveries$tip)
-total_tips_str <- total_tips %>% as_dollar()
-tips_pct <- 100 * round(total_tips / total_earn, digits = 2)
-valueBox(value = total_tips_str,
+tips_pct <- 100 * round(totals['tips'] / totals['earnings'], digits = 2)
+valueBox(value = totals['tips'] %>% as_dollar(),
          caption = str_glue("Tips ({tips_pct}%)"),
          color = sub_green,
          icon = "fa-hand-holding-usd")
@@ -118,10 +114,8 @@ valueBox(value = total_tips_str,
 ### Base Pay
 
 ```{r}
-total_base <- sum(df_deliveries$base_pay)
-total_base_str <- total_base %>% as_dollar()
-base_pct <- 100 * round(total_base / total_earn, digits = 2)
-valueBox(value = total_base_str,
+base_pct <- 100 * round(totals['base'] / totals['earnings'], digits = 2)
+valueBox(value = totals['base'] %>% as_dollar(),
          caption = str_glue("Base Pay ({base_pct}%)"),
          color = sub_green,
          icon = "fa-money-check-alt")
@@ -130,10 +124,8 @@ valueBox(value = total_base_str,
 ### Peak Pay
 
 ```{r}
-total_peak <- sum(df_deliveries$peak_pay)
-total_peak_str <- total_peak %>% as_dollar()
-peak_pct <- 100 * round(total_peak / total_earn, digits = 2)
-valueBox(value = total_peak_str,
+peak_pct <- 100 * round(totals['peak'] / totals['earnings'], digits = 2)
+valueBox(value = totals['peak'] %>% as_dollar(),
          caption = str_glue("Peak Pay ({peak_pct}%)"),
          color = sub_green,
          icon = "fa-coins")
@@ -145,8 +137,7 @@ Column {data-width=150}
 ### Hours
 
 ```{r}
-total_hours <- sum(df_dashes$total_time)
-valueBox(value = total_hours,
+valueBox(value = totals['time'],
          caption = "Hours",
          color = header_blue,
          icon = "fa-stopwatch")
@@ -155,10 +146,9 @@ valueBox(value = total_hours,
 ### Active Time
 
 ```{r}
-active_hours <- sum(df_dashes$active_hr)
-active_pct <- 100 * round(active_hours / total_hours,
+active_pct <- 100 * round(totals['active'] / totals['time'],
                     digits = 2)
-valueBox(value = round(active_hours, digits = 2),
+valueBox(value = round(totals['active'], digits = 2),
          caption = str_glue("Active Time ({active_pct}%)"),
          color = sub_blue,
          icon = "fa-walking")
@@ -167,9 +157,8 @@ valueBox(value = round(active_hours, digits = 2),
 ### Idle Time
 
 ```{r}
-idle_hours <- total_hours - active_hours
-idle_pct <- 100 * round(idle_hours / total_hours, digits = 2)
-valueBox(value = round(idle_hours, digits = 2),
+idle_pct <- 100 * round(totals['idle'] / totals['time'], digits = 2)
+valueBox(value = round(totals['idle'], digits = 2),
          caption = str_glue("Idle Time ({idle_pct}%)"),
          color = sub_blue,
          icon = "fa-blind")
@@ -200,7 +189,7 @@ Column {data-width=150}
 ### By Delivery
 
 ```{r}
-avg_per_deliv <- total_earn / total_deliveries
+avg_per_deliv <- totals['earnings'] / totals['deliveries']
 avg_per_deliv_str <- avg_per_deliv %>% round(digits = 2) %>% as_dollar
 valueBox(value = str_glue("{avg_per_deliv_str}/delivery"),
          caption = "Average Earnings per Delivery",
@@ -214,7 +203,7 @@ Column {data-width=150}
 ### Hourly
 
 ```{r}
-avg_hourly <- total_earn / total_hours
+avg_hourly <- totals['earnings'] / totals['time']
 avg_hourly_str <- avg_hourly %>% round(digits = 2) %>% as_dollar()
 valueBox(value = str_glue("{avg_hourly_str}/hour"),
          caption = "Average Hourly rate",
@@ -228,7 +217,7 @@ Column {data-width=150}
 ### By Mile
 
 ```{r}
-avg_per_mile <- total_earn / total_miles
+avg_per_mile <- totals['earnings'] / totals['miles']
 avg_per_mile_str <- avg_per_mile %>% round(digits = 2) %>% as_dollar
 valueBox(value = str_glue("{avg_per_mile_str}/mile"),
          caption = "Average Earnings per Mile",
