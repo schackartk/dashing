@@ -30,10 +30,14 @@ df_deliveries %>% group_by(peak_pay) %>%
   #            aes(x = peak_pay, y = base_pay, color = factor(peak_pay)),
   #            outlier.shape = NA) +
   geom_violin(data = df_deliveries,
-              aes(x = peak_pay, y = base_pay, color = factor(peak_pay))) +
+              aes(x = peak_pay,
+                  y = base_pay,
+                  color = factor(peak_pay))) +
   geom_jitter(data = df_deliveries,
-              aes(x = peak_pay, y = base_pay, color = factor(peak_pay)),
-              alpha = 0.25,
+              aes(x = peak_pay, 
+                  y = base_pay,
+                  color = factor(peak_pay)),
+              alpha = 0.1,
               width = 0.2) +
   geom_errorbar(aes(ymin = mean_base-base_se,
                    ymax = mean_base+base_se),
@@ -52,7 +56,7 @@ df_dashes$date <- df_dashes$date %>% as_date()
 
 df_dashes %>% ggplot(aes(x = date, y = per_hour)) +
   geom_line() +
-  geom_point() +
+  geom_point(aes(color = day)) +
   geom_point(data = df_deliveries,
              aes(x = as_date(date), y = total),
              color = "gray",
@@ -140,7 +144,7 @@ df_deliveries %>%
 ```
 ```{r}
 df_deliveries %>%
-  arrange(tip, place) %>% 
+  arrange(tip) %>% 
   ggplot(aes(x = tip, y = place,
              label = sprintf("$%0.2f", round(tip, digits = 2)))) +
   geom_col() +
@@ -150,5 +154,18 @@ df_deliveries %>%
   labs(title = "Highest Tips",
        x = "",
        y = "")
+```
+
+```{r}
+df_deliveries %>%
+  arrange(tip) %>% 
+  ggplot(aes(x = tip)) +
+  geom_histogram(binwidth = 1, fill = "lightgray", color = "gray") + 
+  #geom_density()+
+  scale_x_continuous(labels = dollar_format()) +
+  nb_theme +
+  labs(title = "Histogram of Tips",
+       x = "Tip on Delivery",
+       y = "Number of Deliveries")
 ```
 
