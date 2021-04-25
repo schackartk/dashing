@@ -19,6 +19,7 @@ library(readxl)
 library(stringr)
 library(tibble)
 
+source("config.R")
 source("helpers.R")
 source("style.R")
 ```
@@ -28,12 +29,12 @@ source("style.R")
 
 #df_dashes 10-13, 10-18, 10-23 uncertain miles, time and amt good
 
-df_dashes <- read_excel(path = "../data/raw_data.xlsx",
-                        sheet = "days") %>% 
+df_dashes <- read_excel(path = data_paths['excel_file'],
+                        sheet = data_paths['dashes']) %>% 
   wrangle_dashes()
 
-df_deliveries <- read_excel(path = "../data/raw_data.xlsx",
-                            sheet = "deliveries") %>% 
+df_deliveries <- read_excel(path = data_paths['excel_file'],
+                            sheet = data_paths['deliveries']) %>% 
   wrangle_deliveries()
 
 places_summary <- df_deliveries %>% summarize_places()
