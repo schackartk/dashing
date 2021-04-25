@@ -1,6 +1,6 @@
 #' Add a dollar sign to a string
 #'
-#' @param stri A string representing a dollar amount
+#' @param stri A dollar amount
 #'
 #' @return
 #' @export
