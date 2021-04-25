@@ -1,5 +1,6 @@
 # dashing
 Exploring my Doordash data with R.
+
 Disclaimer: This is not well developed for reusability, especially since data are entered manually.
 
 ## Data
