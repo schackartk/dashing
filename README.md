@@ -1,5 +1,6 @@
 # dashing
 Exploring my Doordash data with R.
+Disclaimer: This is not well developed for reusability, especially since data are entered manually.
 
 ## Data
 
@@ -19,7 +20,7 @@ Data is stored in an excel workbook with 2 sheets: "days" and "deliveries". Thes
 * `dash_time`: time spent on orders *as hh:mm*
 * `deliveries`: number of deliveries
 
-#### Column of "deliveries" sheet
+#### Columns of "deliveries" sheet
 
 * `date`: *as YYYY-MM-DD*
 * `base_pay`: *in dollars*
@@ -27,3 +28,17 @@ Data is stored in an excel workbook with 2 sheets: "days" and "deliveries". Thes
 * `tip`: *in dollars*
 * `place`:
 
+## Project Structure
+
+```
+.
+├── data/                       # Data, not in repo                
+├── src
+│   ├── config.R                # File with paths to data, etc.
+│   ├── dash_dashboard.Rmd      # Flex dashboard
+│   ├── graph_tweaking.Rmd      # Playing with new plots for dashboard
+│   ├── helpers.R               # Small functions for dashboard
+│   ├── location_tweaking.Rmd   # Trying to incoporate Takeout location data to dashboard
+│   └── style.R                 # Colors, themes for dashboard 
+└── README.md
+```
