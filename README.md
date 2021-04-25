@@ -1,5 +1,6 @@
 # dashing
 Exploring my Doordash data with R.
+Disclaimer: This is not well developed for reusability, especially since data are entered manually.
 
 ## Data
 
@@ -19,7 +20,7 @@ Data is stored in an excel workbook with 2 sheets: "days" and "deliveries". Thes
 * `dash_time`: time spent on orders *as hh:mm*
 * `deliveries`: number of deliveries
 
-#### Column of "deliveries" sheet
+#### Columns of "deliveries" sheet
 
 * `date`: *as YYYY-MM-DD*
 * `base_pay`: *in dollars*
