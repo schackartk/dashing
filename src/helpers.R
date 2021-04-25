@@ -188,7 +188,7 @@ calculate_totals <- function(df_dashes, df_deliveries, places_summary) {
   earnings_2 <- sum(df_dashes$earnings)
   
   if (earnings_1 != earnings_2)
-    warning("Lifetime number of deliveries does not match")
+    warning("Lifetime earnings does not match")
 
   totals['earnings'] <-  earnings_1
   
