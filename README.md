@@ -1,9 +1,11 @@
 # dashing
 Exploring my Doordash data with R.
 
-## Data Format
+## Data
 
-Data is stored in an excel workbook with 2 sheets: "days" and "deliveries"
+Unfortunately, Doordash does not provide dashers an API for retrieving their data. So data that's available in the app must be manually recorded into an excel workbook.
+
+Data is stored in an excel workbook with 2 sheets: "days" and "deliveries". These sheets have the following column headers in the first row:
 
 #### Columns of "days" sheet
 
