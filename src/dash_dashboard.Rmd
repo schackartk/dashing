@@ -4,7 +4,19 @@ output:
   flexdashboard::flex_dashboard:
     orientation: columns
     vertical_layout: fill
+    theme:
+      bootswatch: lux
 ---
+
+<style>
+.navbar {
+  margin: 0;
+  padding: 0;
+  height: 10%;
+  display: block;
+  position: fixed;
+}
+</style>
 
 ```{r setup, include=FALSE}
 library(dplyr)
@@ -18,6 +30,7 @@ library(magrittr)
 library(readxl)
 library(stringr)
 library(tibble)
+library(scales)
 
 source("config.R")
 source("helpers.R")
@@ -59,7 +72,6 @@ Column {data-width=150}
 ```{r}
 valueBox(value = totals['deliveries'],
          caption = "Deliveries",
-         color = nb_colors['header_red'],
          icon = "fa-car")
 ```
 
@@ -68,7 +80,7 @@ valueBox(value = totals['deliveries'],
 ```{r}
 valueBox(value = totals['miles'],
          caption = "Miles",
-         color = nb_colors['sub_red'],
+         color = "secondary",
          icon = "fa-map")
 ```
 
@@ -77,7 +89,7 @@ valueBox(value = totals['miles'],
 ```{r}
 valueBox(value = totals['places'],
          caption = "Merchants",
-         color = nb_colors['sub_red'],
+         color = "secondary",
          icon = "fa-map-marked-alt")
 ```
 
@@ -86,7 +98,7 @@ valueBox(value = totals['places'],
 ```{r}
 valueBox(value = totals['dashes'],
          caption = "Dashes",
-         color = nb_colors['sub_red'],
+         color = "secondary",
          icon = "fa-road")
 ```
 
@@ -98,7 +110,6 @@ Column {data-width=150}
 ```{r}
 valueBox(value = totals['earnings'] %>% as_dollar(),
          caption = "Earnings",
-         color = nb_colors['header_green'],
          icon = "fa-money-bill-wave-alt")
 ```
 
@@ -108,7 +119,7 @@ valueBox(value = totals['earnings'] %>% as_dollar(),
 tips_pct <- 100 * round(totals['tips'] / totals['earnings'], digits = 2)
 valueBox(value = totals['tips'] %>% as_dollar(),
          caption = str_glue("Tips ({tips_pct}%)"),
-         color = nb_colors['sub_green'],
+         color = "secondary",
          icon = "fa-hand-holding-usd")
 ```
 
@@ -118,7 +129,7 @@ valueBox(value = totals['tips'] %>% as_dollar(),
 base_pct <- 100 * round(totals['base'] / totals['earnings'], digits = 2)
 valueBox(value = totals['base'] %>% as_dollar(),
          caption = str_glue("Base Pay ({base_pct}%)"),
-         color = nb_colors['sub_green'],
+         color = "secondary",
          icon = "fa-money-check-alt")
 ```
 
@@ -128,7 +139,7 @@ valueBox(value = totals['base'] %>% as_dollar(),
 peak_pct <- 100 * round(totals['peak'] / totals['earnings'], digits = 2)
 valueBox(value = totals['peak'] %>% as_dollar(),
          caption = str_glue("Peak Pay ({peak_pct}%)"),
-         color = nb_colors['sub_green'],
+         color = "secondary",
          icon = "fa-coins")
 ```
 
@@ -140,7 +151,6 @@ Column {data-width=150}
 ```{r}
 valueBox(value = totals['time'],
          caption = "Hours",
-         color = nb_colors['header_blue'],
          icon = "fa-stopwatch")
 ```
 
@@ -151,7 +161,7 @@ active_pct <- 100 * round(totals['active'] / totals['time'],
                     digits = 2)
 valueBox(value = round(totals['active'], digits = 2),
          caption = str_glue("Active Time ({active_pct}%)"),
-         color = nb_colors['sub_blue'],
+         color = "secondary",
          icon = "fa-walking")
 ```
 
@@ -161,7 +171,7 @@ valueBox(value = round(totals['active'], digits = 2),
 idle_pct <- 100 * round(totals['idle'] / totals['time'], digits = 2)
 valueBox(value = round(totals['idle'], digits = 2),
          caption = str_glue("Idle Time ({idle_pct}%)"),
-         color = nb_colors['sub_blue'],
+         color = "secondary",
          icon = "fa-blind")
 ```
 
@@ -177,14 +187,14 @@ dash_weeks <- dash_dur %% months(1) %/% weeks(1)
 
 valueBox(value = str_glue("{dash_months} mo, {dash_weeks} wk"),
          caption = str_glue("Time as a Dasher"),
-         color = nb_colors['sub_blue'],
+         color = "secondary",
          icon = "fa-calendar-alt")
 ```
 
-Dash Stats {data-icon="fa-industry"}
+Averages {data-icon="fa-calculator"}
 =======================================================================
 
-Column {data-width=150}
+Column {data-width=300}
 -----------------------------------------------------------------------
 
 ### By Delivery
@@ -194,12 +204,8 @@ avg_per_deliv <- totals['earnings'] / totals['deliveries']
 avg_per_deliv_str <- avg_per_deliv %>% round(digits = 2) %>% as_dollar
 valueBox(value = str_glue("{avg_per_deliv_str}/delivery"),
          caption = "Average Earnings per Delivery",
-         color = nb_colors['header_red'],
-         icon = "fa-utensils")
+         color = "secondary")
 ```
-
-Column {data-width=150}
------------------------------------------------------------------------
 
 ### Hourly
 
@@ -208,12 +214,8 @@ avg_hourly <- totals['earnings'] / totals['time']
 avg_hourly_str <- avg_hourly %>% round(digits = 2) %>% as_dollar()
 valueBox(value = str_glue("{avg_hourly_str}/hour"),
          caption = "Average Hourly rate",
-         color = nb_colors['header_green'],
-         icon = "fa-money-bill-wave-alt")
+         color = "secondary")
 ```
-
-Column {data-width=150}
------------------------------------------------------------------------
 
 ### By Mile
 
@@ -222,14 +224,52 @@ avg_per_mile <- totals['earnings'] / totals['miles']
 avg_per_mile_str <- avg_per_mile %>% round(digits = 2) %>% as_dollar
 valueBox(value = str_glue("{avg_per_mile_str}/mile"),
          caption = "Average Earnings per Mile",
-         color = nb_colors['header_blue'],
-         icon = "fa-car")
+         color = "secondary")
 ```
 
-Hi-Scores {data-icon="fa-greater-than"}
+Column {.tabset}
+-----------------------------------------------------------------------
+
+### Tips Histogram
+
+```{r}
+df_deliveries %>%
+  arrange(tip) %>% 
+  ggplot(aes(x = tip)) +
+  geom_histogram(binwidth = 1, fill = "lightgray", color = "gray") + 
+  scale_x_continuous(labels = dollar_format()) +
+  nb_theme +
+  labs(title = "Histogram of Tips",
+       x = "Tip on Delivery",
+       y = "Number of Deliveries")
+```
+
+### Earnings Over Time
+```{r pay_over_time}
+df_dashes$date <- df_dashes$date %>% as_date()
+
+df_dashes %>% ggplot(aes(x = date, y = per_hour)) +
+  geom_line() +
+  geom_point(color = "black") +
+  geom_point(data = df_deliveries,
+             aes(x = as_date(date), y = total),
+             color = "gray",
+             alpha = 0.5) +
+  nb_theme +
+  scale_y_continuous(labels = dollar_format(),
+                     sec.axis = sec_axis(~.*1,
+                       name = "Individual Delivery Earning",
+                       labels = dollar_format())) +
+  labs(x = "",
+       #caption = "Individual Delivery Earnings in Gray (not average)",
+       y = "Average Hourly Earnings")
+```
+
+
+Hi-Scores {data-icon="fa-medal"}
 =======================================================================
 
-Column {data-height=150}
+Column {data-width=300}
 -----------------------------------------------------------------------
 
 ### Best Dash Hourly
@@ -237,8 +277,8 @@ Column {data-height=150}
 most_hourly <- max(df_dashes$per_hour)
 most_hourly_date <- df_dashes$date[df_dashes$per_hour == most_hourly]
 valueBox(value = paste0(as_dollar(most_hourly),"/hr"),
-         caption = glue("Highest hourly rate Dash ({most_hourly_date})"),
-         color = "lightblue")
+         caption = glue("Highest hourly rate, {most_hourly_date}"),
+         color = "secondary")
 ```
 
 ### Highest Tip
@@ -246,8 +286,9 @@ valueBox(value = paste0(as_dollar(most_hourly),"/hr"),
 highest_tip <- max(df_deliveries$tip)
 highest_tip_place <- df_deliveries$place[
   df_deliveries$tip == highest_tip]
-valueBox(value = as_dollar(highest_tip),
-         caption = glue("Highest tip, from {highest_tip_place}"))
+valueBox(value = paste(as_dollar(highest_tip), "tip"),
+         caption = glue("Highest tip, from {highest_tip_place}"),
+         color = "secondary")
 ```
 
 ### Most deliveries
@@ -256,7 +297,18 @@ most_deliveries <- max(df_dashes$deliveries)
 most_deliveries_date <- df_dashes$date[
   df_dashes$deliveries == most_deliveries]
 valueBox(value = paste(most_deliveries, "deliveries"),
-         caption = glue("Most deliveries per dash ({most_deliveries_date})"))
+         caption = glue("Most deliveries per dash, {most_deliveries_date}"),
+         color = "secondary")
+```
+
+### Longest dash
+```{r}
+longest_dash <- max(df_dashes$total_time)
+longest_dash_date <- df_dashes$date[
+  df_dashes$total_time == longest_dash]
+valueBox(value = paste(longest_dash, "hours"),
+         caption = glue("Longest dash, {longest_dash_date}"),
+         color = "secondary")
 ```
 
 Column {.tabset}
@@ -309,53 +361,6 @@ htmltools::tags$iframe(src = "heatmap.html",
                        id="heatmap")
 
 htmltools::tags$script(htmltools::HTML("iFrameResize({ log: true }, '#heatmap')"))
-```
-
-
-Merchants {data-icon="fa-utensils"}
-=======================================================================
-
-Column {data-width=150}
------------------------------------------------------------------------
-
-### Most Deliveries
-
-```{r}
-places_summary %>%
-  slice_max(order_by = count, n = 10) %>% 
-  mutate(place = factor(place, levels = rev(place))) %>%
-  mutate(place = fct_reorder(place, count)) %>%
-  ggplot(aes(x = count, y = place, label = count)) +
-  geom_col() +
-  geom_label(x = 0.5) +
-  nb_theme +
-  theme(axis.text.x = element_blank()) +
-  labs(title = "Number of Deliveries by Place",
-       x = "",
-       y = "")
-```
-
-Column {data-width=150}
------------------------------------------------------------------------
-
-### Highest Average Tips
-
-```{r}
-places_summary %>%
-  filter(count > 1) %>% 
-  slice_max(order_by = mean_tip, n = 10) %>% 
-  mutate(place = factor(place, levels = rev(place))) %>%
-  mutate(place = fct_reorder(place, mean_tip)) %>%
-  ggplot(aes(x = mean_tip, y = place,
-             label = sprintf("$%0.2f", round(mean_tip, digits = 2)))) +
-  geom_col() +
-  geom_label(x = 0.8) +
-  nb_theme +
-  theme(axis.text.x = element_blank()) +
-  labs(title = "Average Tip by Place",
-       subtitle = "For places with more than 1 delivery",
-       x = "",
-       y = "")
 ```
 
 
