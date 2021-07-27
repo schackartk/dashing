@@ -59,7 +59,7 @@ Column {data-width=150}
 ```{r}
 valueBox(value = totals['deliveries'],
          caption = "Deliveries",
-         color = header_red,
+         color = nb_colors['header_red'],
          icon = "fa-car")
 ```
 
@@ -68,7 +68,7 @@ valueBox(value = totals['deliveries'],
 ```{r}
 valueBox(value = totals['miles'],
          caption = "Miles",
-         color = sub_red,
+         color = nb_colors['sub_red'],
          icon = "fa-map")
 ```
 
@@ -77,7 +77,7 @@ valueBox(value = totals['miles'],
 ```{r}
 valueBox(value = totals['places'],
          caption = "Merchants",
-         color = sub_red,
+         color = nb_colors['sub_red'],
          icon = "fa-map-marked-alt")
 ```
 
@@ -86,7 +86,7 @@ valueBox(value = totals['places'],
 ```{r}
 valueBox(value = totals['dashes'],
          caption = "Dashes",
-         color = sub_red,
+         color = nb_colors['sub_red'],
          icon = "fa-road")
 ```
 
@@ -98,7 +98,7 @@ Column {data-width=150}
 ```{r}
 valueBox(value = totals['earnings'] %>% as_dollar(),
          caption = "Earnings",
-         color = header_green,
+         color = nb_colors['header_green'],
          icon = "fa-money-bill-wave-alt")
 ```
 
@@ -108,7 +108,7 @@ valueBox(value = totals['earnings'] %>% as_dollar(),
 tips_pct <- 100 * round(totals['tips'] / totals['earnings'], digits = 2)
 valueBox(value = totals['tips'] %>% as_dollar(),
          caption = str_glue("Tips ({tips_pct}%)"),
-         color = sub_green,
+         color = nb_colors['sub_green'],
          icon = "fa-hand-holding-usd")
 ```
 
@@ -118,7 +118,7 @@ valueBox(value = totals['tips'] %>% as_dollar(),
 base_pct <- 100 * round(totals['base'] / totals['earnings'], digits = 2)
 valueBox(value = totals['base'] %>% as_dollar(),
          caption = str_glue("Base Pay ({base_pct}%)"),
-         color = sub_green,
+         color = nb_colors['sub_green'],
          icon = "fa-money-check-alt")
 ```
 
@@ -128,7 +128,7 @@ valueBox(value = totals['base'] %>% as_dollar(),
 peak_pct <- 100 * round(totals['peak'] / totals['earnings'], digits = 2)
 valueBox(value = totals['peak'] %>% as_dollar(),
          caption = str_glue("Peak Pay ({peak_pct}%)"),
-         color = sub_green,
+         color = nb_colors['sub_green'],
          icon = "fa-coins")
 ```
 
@@ -140,7 +140,7 @@ Column {data-width=150}
 ```{r}
 valueBox(value = totals['time'],
          caption = "Hours",
-         color = header_blue,
+         color = nb_colors['header_blue'],
          icon = "fa-stopwatch")
 ```
 
@@ -151,7 +151,7 @@ active_pct <- 100 * round(totals['active'] / totals['time'],
                     digits = 2)
 valueBox(value = round(totals['active'], digits = 2),
          caption = str_glue("Active Time ({active_pct}%)"),
-         color = sub_blue,
+         color = nb_colors['sub_blue'],
          icon = "fa-walking")
 ```
 
@@ -161,7 +161,7 @@ valueBox(value = round(totals['active'], digits = 2),
 idle_pct <- 100 * round(totals['idle'] / totals['time'], digits = 2)
 valueBox(value = round(totals['idle'], digits = 2),
          caption = str_glue("Idle Time ({idle_pct}%)"),
-         color = sub_blue,
+         color = nb_colors['sub_blue'],
          icon = "fa-blind")
 ```
 
@@ -177,11 +177,11 @@ dash_weeks <- dash_dur %% months(1) %/% weeks(1)
 
 valueBox(value = str_glue("{dash_months} mo, {dash_weeks} wk"),
          caption = str_glue("Time as a Dasher"),
-         color = sub_blue,
+         color = nb_colors['sub_blue'],
          icon = "fa-calendar-alt")
 ```
 
-Dash Stats
+Dash Stats {data-icon="fa-industry"}
 =======================================================================
 
 Column {data-width=150}
@@ -194,7 +194,7 @@ avg_per_deliv <- totals['earnings'] / totals['deliveries']
 avg_per_deliv_str <- avg_per_deliv %>% round(digits = 2) %>% as_dollar
 valueBox(value = str_glue("{avg_per_deliv_str}/delivery"),
          caption = "Average Earnings per Delivery",
-         color = header_red,
+         color = nb_colors['header_red'],
          icon = "fa-utensils")
 ```
 
@@ -208,7 +208,7 @@ avg_hourly <- totals['earnings'] / totals['time']
 avg_hourly_str <- avg_hourly %>% round(digits = 2) %>% as_dollar()
 valueBox(value = str_glue("{avg_hourly_str}/hour"),
          caption = "Average Hourly rate",
-         color = header_green,
+         color = nb_colors['header_green'],
          icon = "fa-money-bill-wave-alt")
 ```
 
@@ -222,11 +222,11 @@ avg_per_mile <- totals['earnings'] / totals['miles']
 avg_per_mile_str <- avg_per_mile %>% round(digits = 2) %>% as_dollar
 valueBox(value = str_glue("{avg_per_mile_str}/mile"),
          caption = "Average Earnings per Mile",
-         color = header_blue,
+         color = nb_colors['header_blue'],
          icon = "fa-car")
 ```
 
-Superlatives
+Superlatives {data-icon="fa-greater-than"}
 =======================================================================
 
 Row {data-width=150}
@@ -241,22 +241,16 @@ valueBox(value = paste0(as_dollar(most_hourly),"/hr"),
          color = "lightblue")
 ```
 
-Weekdays {data-icon="fa-calendar"}
+Map {data-icon="fa-map"}
 =======================================================================
 
-Row {data-width=350}
------------------------------------------------------------------------
+```{r, echo=FALSE, height="100%"}
+htmltools::tags$iframe(src = "heatmap.html",
+                       height="100%", width="100%",
+                       frameborder="0",
+                       id="heatmap")
 
-### Chart B
-
-```{r}
-
-```
-
-### Chart C
-
-```{r}
-
+htmltools::tags$script(htmltools::HTML("iFrameResize({ log: true }, '#heatmap')"))
 ```
 
 
