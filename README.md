@@ -1,5 +1,6 @@
 # dashing
 Exploring my Doordash data with R.
+
 Disclaimer: This is not well developed for reusability, especially since data are entered manually.
 
 ## Data
@@ -40,5 +41,8 @@ Data is stored in an excel workbook with 2 sheets: "days" and "deliveries". Thes
 │   ├── helpers.R               # Small functions for dashboard
 │   ├── location_tweaking.Rmd   # Trying to incoporate Takeout location data to dashboard
 │   └── style.R                 # Colors, themes for dashboard 
+├── tests
+│   ├── test_data.R             # Test assumptions of data structure
+│   └── test_helpers.R          # Test helper functions
 └── README.md
 ```
