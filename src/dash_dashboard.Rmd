@@ -230,20 +230,6 @@ valueBox(value = str_glue("{avg_per_mile_str}/mile"),
 Column {.tabset}
 -----------------------------------------------------------------------
 
-### Tips Histogram
-
-```{r}
-df_deliveries %>%
-  arrange(tip) %>% 
-  ggplot(aes(x = tip)) +
-  geom_histogram(binwidth = 1, fill = "lightgray", color = "gray") + 
-  scale_x_continuous(labels = dollar_format()) +
-  nb_theme +
-  labs(title = "Histogram of Tips",
-       x = "Tip on Delivery",
-       y = "Number of Deliveries")
-```
-
 ### Earnings Over Time
 ```{r pay_over_time}
 df_dashes$date <- df_dashes$date %>% as_date()
@@ -265,6 +251,19 @@ df_dashes %>% ggplot(aes(x = date, y = per_hour)) +
        y = "Average Hourly Earnings")
 ```
 
+### Tips Histogram
+
+```{r}
+df_deliveries %>%
+  arrange(tip) %>% 
+  ggplot(aes(x = tip)) +
+  geom_histogram(binwidth = 1, fill = "lightgray", color = "gray") + 
+  scale_x_continuous(labels = dollar_format()) +
+  nb_theme +
+  labs(title = "Histogram of Tips",
+       x = "Tip on Delivery",
+       y = "Number of Deliveries")
+```
 
 Hi-Scores {data-icon="fa-medal"}
 =======================================================================
