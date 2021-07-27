@@ -2,3 +2,6 @@ data/
 *.Rproj
 .Rproj.user/
 src/*.html
+.Rdata
+.Rhistory
+.Rprofile
