@@ -17,6 +17,7 @@ library(takeout)        # My custom package for cleaning Takeout data
 # Clean the data a bit and fix column types
 
 locations <- json_to_tibble(f = "../data/Takeout/Location History/Location History.json") %>%
+  select("locations.timestampMs", "locations.latitudeE7", "locations.longitudeE7", "locations.accuracy") %>% 
   clean_locations() %>%
   select(timestamp, latitude, longitude)
 
@@ -87,7 +88,7 @@ with open('../data/dash_locations.csv','rb') as f:
 
 m = folium.Map()
 
-HeatMap(data = data).add_to(m)
+HeatMap(data = map_data).add_to(m)
 
 m.save("python_loc.html")
 ```
