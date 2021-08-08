@@ -12,7 +12,7 @@ output:
 .navbar {
   margin: 0;
   padding: 0;
-  height: 10%;
+  height: 10;
   display: block;
   position: fixed;
 }
@@ -138,7 +138,7 @@ valueBox(value = totals['base'] %>% as_dollar(),
 ```{r}
 peak_pct <- 100 * round(totals['peak'] / totals['earnings'], digits = 2)
 valueBox(value = totals['peak'] %>% as_dollar(),
-         caption = str_glue("Peak Pay ({peak_pct}%)"),
+         caption = str_glue("Peak (Bonus) Pay ({peak_pct}%)"),
          color = "secondary",
          icon = "fa-coins")
 ```
@@ -159,7 +159,8 @@ valueBox(value = totals['time'],
 ```{r}
 active_pct <- 100 * round(totals['active'] / totals['time'],
                     digits = 2)
-valueBox(value = round(totals['active'], digits = 2),
+valueBox(value = paste(round(totals['active'], digits = 2),
+                       "hr"),
          caption = str_glue("Active Time ({active_pct}%)"),
          color = "secondary",
          icon = "fa-walking")
@@ -169,8 +170,9 @@ valueBox(value = round(totals['active'], digits = 2),
 
 ```{r}
 idle_pct <- 100 * round(totals['idle'] / totals['time'], digits = 2)
-valueBox(value = round(totals['idle'], digits = 2),
-         caption = str_glue("Idle Time ({idle_pct}%)"),
+valueBox(value = paste(round(totals['idle'], digits = 2),
+                       "hr"),
+         caption = str_glue("Time Between Orders ({idle_pct}%)"),
          color = "secondary",
          icon = "fa-blind")
 ```
@@ -191,11 +193,21 @@ valueBox(value = str_glue("{dash_months} mo, {dash_weeks} wk"),
          icon = "fa-calendar-alt")
 ```
 
-Averages {data-icon="fa-calculator"}
+Statistics {data-icon="fa-calculator"}
 =======================================================================
 
 Column {data-width=300}
 -----------------------------------------------------------------------
+
+### Hourly
+
+```{r}
+avg_hourly <- totals['earnings'] / totals['time']
+avg_hourly_str <- avg_hourly %>% round(digits = 2) %>% as_dollar()
+valueBox(value = str_glue("{avg_hourly_str}/hour"),
+         caption = "Average Hourly Rate",
+         color = "secondary")
+```
 
 ### By Delivery
 
@@ -204,16 +216,6 @@ avg_per_deliv <- totals['earnings'] / totals['deliveries']
 avg_per_deliv_str <- avg_per_deliv %>% round(digits = 2) %>% as_dollar
 valueBox(value = str_glue("{avg_per_deliv_str}/delivery"),
          caption = "Average Earnings per Delivery",
-         color = "secondary")
-```
-
-### Hourly
-
-```{r}
-avg_hourly <- totals['earnings'] / totals['time']
-avg_hourly_str <- avg_hourly %>% round(digits = 2) %>% as_dollar()
-valueBox(value = str_glue("{avg_hourly_str}/hour"),
-         caption = "Average Hourly rate",
          color = "secondary")
 ```
 
@@ -227,15 +229,26 @@ valueBox(value = str_glue("{avg_per_mile_str}/mile"),
          color = "secondary")
 ```
 
+### Deliveries per Dash
+
+```{r}
+avg_per_dash <- (totals['deliveries'] / totals['dashes']) %>% 
+  round(digits = 2)
+valueBox(value = str_glue("{avg_per_dash} deliveries"),
+         caption = "Average Deliveries per Dash",
+         color = "secondary")
+
+```
+
 Column {.tabset}
 -----------------------------------------------------------------------
 
 ### Earnings Over Time
 ```{r pay_over_time}
-df_dashes$date <- df_dashes$date %>% as_date()
+df_dashes$date <- df_dashes$date %>% as_date("%b %Y")
 
 df_dashes %>% ggplot(aes(x = date, y = per_hour)) +
-  geom_line() +
+  #geom_line() +
   geom_point(color = "black") +
   geom_point(data = df_deliveries,
              aes(x = as_date(date), y = total),
@@ -276,7 +289,7 @@ Column {data-width=300}
 most_hourly <- max(df_dashes$per_hour)
 most_hourly_date <- df_dashes$date[df_dashes$per_hour == most_hourly]
 valueBox(value = paste0(as_dollar(most_hourly),"/hr"),
-         caption = glue("Highest hourly rate, {most_hourly_date}"),
+         caption = glue("Highest Hourly Rate, {most_hourly_date}"),
          color = "secondary")
 ```
 
@@ -286,7 +299,7 @@ highest_tip <- max(df_deliveries$tip)
 highest_tip_place <- df_deliveries$place[
   df_deliveries$tip == highest_tip]
 valueBox(value = paste(as_dollar(highest_tip), "tip"),
-         caption = glue("Highest tip, from {highest_tip_place}"),
+         caption = glue("Highest Tip, from {highest_tip_place}"),
          color = "secondary")
 ```
 
@@ -296,7 +309,7 @@ most_deliveries <- max(df_dashes$deliveries)
 most_deliveries_date <- df_dashes$date[
   df_dashes$deliveries == most_deliveries]
 valueBox(value = paste(most_deliveries, "deliveries"),
-         caption = glue("Most deliveries per dash, {most_deliveries_date}"),
+         caption = glue("Most Deliveries per Dash, {most_deliveries_date}"),
          color = "secondary")
 ```
 
@@ -306,7 +319,7 @@ longest_dash <- max(df_dashes$total_time)
 longest_dash_date <- df_dashes$date[
   df_dashes$total_time == longest_dash]
 valueBox(value = paste(longest_dash, "hours"),
-         caption = glue("Longest dash, {longest_dash_date}"),
+         caption = glue("Longest Dash, {longest_dash_date}"),
          color = "secondary")
 ```
 
