@@ -6,3 +6,4 @@ src/*.html
 .Rhistory
 .Rprofile
 .snakemake
+src/*.svg
