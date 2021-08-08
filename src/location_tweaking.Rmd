@@ -17,7 +17,7 @@ library(takeout)        # My custom package for cleaning Takeout data
 # Clean the data a bit and fix column types
 
 locations <- json_to_tibble(f = "../data/Takeout/Location History/Location History.json") %>%
-  select("locations.timestampMs", "locations.latitudeE7", "locations.longitudeE7", "locations.accuracy") %>% 
+  #select("locations.timestampMs", "locations.latitudeE7", "locations.longitudeE7", "locations.accuracy") %>% 
   clean_locations() %>%
   select(timestamp, latitude, longitude)
 
