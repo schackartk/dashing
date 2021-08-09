@@ -1,48 +1,23 @@
-# dashing
-Exploring my Doordash data with R.
+# Dashing
 
-Disclaimer: This is not well developed for reusability, especially since data are entered manually.
+This repository contains analyses of data obtained as a Dasher.
 
-## Data
+## [Dashboard](https://schackartk.github.io/dashing/dashboard.html)
 
-Unfortunately, Doordash does not provide dashers an API for retrieving their data. So data that's available in the app must be manually recorded into an excel workbook.
+This dashboard is a [flexdashboard](https://pkgs.rstudio.com/flexdashboard/) made using R. Unfortunately, Doordash does not provide an API for fetching Dasher data. So, I got the data from the Dasher app, and recorded it by hand in an excel spreadsheet.
 
-Data is stored in an excel workbook with 2 sheets: "days" and "deliveries". These sheets have the following column headers in the first row:
+## [Location Heatmap](https://schackartk.github.io/dashing/heatmap.html)
 
-#### Columns of "days" sheet
+This heatmap was created in Python using the [folium](http://python-visualization.github.io/folium/) package. Location data is recorded from my smartphone using Google location tracking in Maps. Data are downloaded from [Google Takeout](https://takeout.google.com/). Preprocessing of location data is done in R, with the help of a small custom R package I created for this purpose called [takeout](https://github.com/schackartk/takeout). The data shown in the heatmap are locations that were logged only during dashes.
 
-* `date`: *as YYYY-MM-DD*
-* `time_in`: time at beginning of dash *as hh:mm* (24 hour time) 
-* `time_out`: time at beginning of dash *as hh:mm* (24 hour time)
-* `odo_in`: odometer reading at beginning of dash *in miles*
-* `odo_out`: odometer reading at end of dash *in miles*
-* `earnings`: *in dollars*
-* `active_time`: time spent waiting for offers *as hh:mm*
-* `dash_time`: time spent on orders *as hh:mm*
-* `deliveries`: number of deliveries
+## About this Project
 
-#### Columns of "deliveries" sheet
+### Reproducibility
 
-* `date`: *as YYYY-MM-DD*
-* `base_pay`: *in dollars*
-* `peak_pay`: *in dollars*
-* `tip`: *in dollars*
-* `place`:
+Sadly, much of this project is not easily reusable for others. The most annoying part is having to record the data manually to an excel workbook. I have provided a README.md in `data/` that explains how the data are organized. By following this template, you may be able to get the code to work for you.
 
-## Project Structure
+Additionally, I have not gone through great efforts in this project to remove hard-coded paths, etc. I intended it originally for myself, but wanted to share my code along with the results anyway. If you are viewing this as Github Pages, the original repository can be found on [Github](https://github.com/schackartk/dashing/)
 
-```
-.
-├── data/                       # Data, not in repo                
-├── src
-│   ├── config.R                # File with paths to data, etc.
-│   ├── dash_dashboard.Rmd      # Flex dashboard
-│   ├── graph_tweaking.Rmd      # Playing with new plots for dashboard
-│   ├── helpers.R               # Small functions for dashboard
-│   ├── location_tweaking.Rmd   # Trying to incoporate Takeout location data to dashboard
-│   └── style.R                 # Colors, themes for dashboard 
-├── tests
-│   ├── test_data.R             # Test assumptions of data structure
-│   └── test_helpers.R          # Test helper functions
-└── README.md
-```
+### Authorship
+
+This project was developed by Kenneth Schackart (schackartk1@gmail.com).
