@@ -30,6 +30,7 @@ library(magrittr)
 library(readxl)
 library(stringr)
 library(tibble)
+library(tidyr)
 library(scales)
 
 source("config.R")
@@ -225,32 +226,48 @@ Column {.tabset}
 
 ### Earnings Over Time
 ```{r pay_over_time}
-df_dashes$date <- df_dashes$date %>% as_date("%b %Y")
+df_earnings <- full_join(df_dashes, df_deliveries) %>% 
+  select(date, per_hour, total) %>% 
+  pivot_longer(cols = c(per_hour, total),
+               names_to = "series") %>% 
+  unique()
 
-df_dashes %>% ggplot(aes(x = date, y = per_hour)) +
-  #geom_line() +
-  geom_point(color = "black") +
-  geom_point(data = df_deliveries,
-             aes(x = as_date(date), y = total),
-             color = "gray",
-             alpha = 0.5) +
+df_earnings$date <- as.Date(df_earnings$date)
+
+df_earnings %>% ggplot(aes(x = date, y = value,
+                           color = series, alpha = series)) +
+  geom_vline(xintercept = as.Date(c("2021-01-01", "2021-03-13")),
+             color = "darkgray", linetype = "dashed",
+             size = 1) +
+  geom_point() +
+  scale_color_manual(values = c("black", "gray"),
+                     labels = c("Hourly for Dash", "Individual Delivery")) +
+  scale_alpha_manual(values = c(1, 0.5),
+                     labels = c("Hourly for Dash", "Individual Delivery")) +
   nb_theme +
-  scale_y_continuous(labels = dollar_format(),
-                     sec.axis = sec_axis(~.*1,
-                       name = "Individual Delivery Earnings (grey)",
-                       labels = dollar_format())) +
+  theme(legend.position = "bottom") +
+  scale_x_date(labels = date_format("%b %Y"), date_breaks = "2 months") +
+  scale_y_continuous(labels = dollar_format()) +
   labs(x = "",
-       #caption = "Individual Delivery Earnings in Gray (not average)",
-       y = "Average Hourly Earnings (black)")
+       caption = "Approximate stimulus check dates as dashed lines",
+       y = "Earnings",
+       color = "", alpha = "")
 ```
 
 ### Tips Histogram
 
 ```{r}
+avg_tip = mean(df_deliveries$tip)
+
 df_deliveries %>%
   arrange(tip) %>% 
   ggplot(aes(x = tip)) +
-  geom_histogram(binwidth = 1, fill = "lightgray", color = "gray") + 
+  geom_histogram(binwidth = 1, fill = "lightgray", color = "gray") +
+  geom_vline(xintercept = avg_tip, color = "darkgray",
+             linetype = "dashed", size = 1) +
+  geom_text(aes(x = avg_tip, y = 155), nudge_x = 2.2,
+            label = str_glue("Average: ${round(avg_tip,2)}"),
+            color = "darkgray") +
   scale_x_continuous(labels = dollar_format()) +
   nb_theme +
   labs(title = "Histogram of Tips",
