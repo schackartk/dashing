@@ -1,6 +1,6 @@
 rule all:
     input:
-        "dash_dashboard.html"
+        "src/dash_dashboard.html"
 
 rule wrangle_dashes:
     input:
