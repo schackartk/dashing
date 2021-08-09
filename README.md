@@ -1,5 +1,3 @@
-# Dashing
-
 This repository contains analyses of data obtained as a Dasher.
 
 ## [Dashboard](https://schackartk.github.io/dashing/dashboard.html)
