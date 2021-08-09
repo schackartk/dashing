@@ -5,8 +5,8 @@ library(magrittr)
 library(readxl)
 library(stringr)
 
-source("config.R")
-source("helpers.R")
+source("src/config.R")
+source("src/helpers.R")
 
 # Custom functions for data wrangling are in helpers.R
 
