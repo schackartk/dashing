@@ -1,6 +1,6 @@
 # Code Structure
 
-![snakemake_dag.svg](Directed Acyclic Graph of Snakemake Pipelint)
+![Directed Acyclic Graph of Snakemake Pipeline](snakemake_dag.svg)
 
 Here is a tree of the code used in this project. Tests are located in `tests/` at the root of this repository
 
