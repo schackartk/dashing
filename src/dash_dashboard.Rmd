@@ -38,7 +38,7 @@ source("style.R")
 ```
 
 ```{r load_data, include=FALSE}
-load(data_paths['wrangled_data'])
+load(paste0("../",data_paths['wrangled_data']))
 ```
 
 Totals {data-icon="glyphicon-globe"}
@@ -237,11 +237,11 @@ df_dashes %>% ggplot(aes(x = date, y = per_hour)) +
   nb_theme +
   scale_y_continuous(labels = dollar_format(),
                      sec.axis = sec_axis(~.*1,
-                       name = "Individual Delivery Earning",
+                       name = "Individual Delivery Earnings (grey)",
                        labels = dollar_format())) +
   labs(x = "",
        #caption = "Individual Delivery Earnings in Gray (not average)",
-       y = "Average Hourly Earnings")
+       y = "Average Hourly Earnings (black)")
 ```
 
 ### Tips Histogram
