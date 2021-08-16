@@ -8,6 +8,7 @@ output:
       bootswatch: lux
 ---
 
+```{=html}
 <style>
 .navbar {
   margin: 0;
@@ -17,7 +18,7 @@ output:
   position: fixed;
 }
 </style>
-
+```
 ```{r setup, include=FALSE}
 library(dplyr)
 library(flexdashboard)
@@ -42,15 +43,13 @@ source("style.R")
 load(paste0("../",data_paths['wrangled_data']))
 ```
 
-Totals {data-icon="glyphicon-globe"}
-=======================================================================
+# Totals {data-icon="glyphicon-globe"}
 
-Column {data-width=150}
------------------------------------------------------------------------
+## Column {data-width="150"}
 
 ### Deliveries
 
-```{r}
+```{r total_deliveries}
 valueBox(value = totals['deliveries'],
          caption = "Deliveries",
          icon = "fa-car")
@@ -58,7 +57,7 @@ valueBox(value = totals['deliveries'],
 
 ### Miles
 
-```{r}
+```{r total_miles}
 valueBox(value = totals['miles'],
          caption = "Miles",
          color = "secondary",
@@ -67,7 +66,7 @@ valueBox(value = totals['miles'],
 
 ### Restaurants
 
-```{r}
+```{r total_places}
 valueBox(value = totals['places'],
          caption = "Merchants",
          color = "secondary",
@@ -76,19 +75,18 @@ valueBox(value = totals['places'],
 
 ### Dashes
 
-```{r}
+```{r total_dashes}
 valueBox(value = totals['dashes'],
          caption = "Dashes",
          color = "secondary",
          icon = "fa-road")
 ```
 
-Column {data-width=150}
------------------------------------------------------------------------
+## Column {data-width="150"}
 
 ### Earnings
 
-```{r}
+```{r total_earnings}
 valueBox(value = totals['earnings'] %>% as_dollar(),
          caption = "Earnings",
          icon = "fa-money-bill-wave-alt")
@@ -96,7 +94,7 @@ valueBox(value = totals['earnings'] %>% as_dollar(),
 
 ### Tips
 
-```{r}
+```{r total_tips}
 tips_pct <- 100 * round(totals['tips'] / totals['earnings'], digits = 2)
 valueBox(value = totals['tips'] %>% as_dollar(),
          caption = str_glue("Tips ({tips_pct}%)"),
@@ -106,7 +104,7 @@ valueBox(value = totals['tips'] %>% as_dollar(),
 
 ### Base Pay
 
-```{r}
+```{r total_base}
 base_pct <- 100 * round(totals['base'] / totals['earnings'], digits = 2)
 valueBox(value = totals['base'] %>% as_dollar(),
          caption = str_glue("Base Pay ({base_pct}%)"),
@@ -116,7 +114,7 @@ valueBox(value = totals['base'] %>% as_dollar(),
 
 ### Peak Pay
 
-```{r}
+```{r total_peak}
 peak_pct <- 100 * round(totals['peak'] / totals['earnings'], digits = 2)
 valueBox(value = totals['peak'] %>% as_dollar(),
          caption = str_glue("Peak (Bonus) Pay ({peak_pct}%)"),
@@ -124,12 +122,11 @@ valueBox(value = totals['peak'] %>% as_dollar(),
          icon = "fa-coins")
 ```
 
-Column {data-width=150}
------------------------------------------------------------------------
+## Column {data-width="150"}
 
 ### Hours
 
-```{r}
+```{r total_hours}
 valueBox(value = totals['time'],
          caption = "Hours",
          icon = "fa-stopwatch")
@@ -137,7 +134,7 @@ valueBox(value = totals['time'],
 
 ### Active Time
 
-```{r}
+```{r total_active}
 active_pct <- 100 * round(totals['active'] / totals['time'],
                     digits = 2)
 valueBox(value = paste(round(totals['active'], digits = 2),
@@ -149,7 +146,7 @@ valueBox(value = paste(round(totals['active'], digits = 2),
 
 ### Idle Time
 
-```{r}
+```{r total_idle}
 idle_pct <- 100 * round(totals['idle'] / totals['time'], digits = 2)
 valueBox(value = paste(round(totals['idle'], digits = 2),
                        "hr"),
@@ -160,7 +157,7 @@ valueBox(value = paste(round(totals['idle'], digits = 2),
 
 ### Dashing Duration
 
-```{r}
+```{r dasher_duration}
 dash_dur <- interval(min(df_dashes$date),
                         max(df_dashes$date))
 
@@ -174,15 +171,14 @@ valueBox(value = str_glue("{dash_months} mo, {dash_weeks} wk"),
          icon = "fa-calendar-alt")
 ```
 
-Statistics {data-icon="fa-calculator"}
-=======================================================================
 
-Column {data-width=300}
------------------------------------------------------------------------
+# Statistics {data-icon="fa-calculator"}
+
+## Column {data-width="300"}
 
 ### Hourly
 
-```{r}
+```{r avg_hourly}
 avg_hourly <- totals['earnings'] / totals['time']
 avg_hourly_str <- avg_hourly %>% round(digits = 2) %>% as_dollar()
 valueBox(value = str_glue("{avg_hourly_str}/hour"),
@@ -192,7 +188,7 @@ valueBox(value = str_glue("{avg_hourly_str}/hour"),
 
 ### By Delivery
 
-```{r}
+```{r avg_delivery}
 avg_per_deliv <- totals['earnings'] / totals['deliveries']
 avg_per_deliv_str <- avg_per_deliv %>% round(digits = 2) %>% as_dollar
 valueBox(value = str_glue("{avg_per_deliv_str}/delivery"),
@@ -202,7 +198,7 @@ valueBox(value = str_glue("{avg_per_deliv_str}/delivery"),
 
 ### By Mile
 
-```{r}
+```{r avg_milely}
 avg_per_mile <- totals['earnings'] / totals['miles']
 avg_per_mile_str <- avg_per_mile %>% round(digits = 2) %>% as_dollar
 valueBox(value = str_glue("{avg_per_mile_str}/mile"),
@@ -212,7 +208,7 @@ valueBox(value = str_glue("{avg_per_mile_str}/mile"),
 
 ### Deliveries per Dash
 
-```{r}
+```{r avg_deliveries}
 avg_per_dash <- (totals['deliveries'] / totals['dashes']) %>% 
   round(digits = 2)
 valueBox(value = str_glue("{avg_per_dash} deliveries"),
@@ -221,11 +217,11 @@ valueBox(value = str_glue("{avg_per_dash} deliveries"),
 
 ```
 
-Column {.tabset}
------------------------------------------------------------------------
+## Column {.tabset}
 
 ### Earnings Over Time
-```{r pay_over_time}
+
+```{r earn_over_time}
 df_earnings <- full_join(df_dashes, df_deliveries) %>% 
   select(date, per_hour, total) %>% 
   pivot_longer(cols = c(per_hour, total),
@@ -256,7 +252,7 @@ df_earnings %>% ggplot(aes(x = date, y = value,
 
 ### Tips Histogram
 
-```{r}
+```{r tips_histo}
 avg_tip = mean(df_deliveries$tip)
 
 df_deliveries %>%
@@ -275,14 +271,13 @@ df_deliveries %>%
        y = "Number of Deliveries")
 ```
 
-Hi-Scores {data-icon="fa-medal"}
-=======================================================================
+# Hi-Scores {data-icon="fa-medal"}
 
-Column {data-width=300}
------------------------------------------------------------------------
+## Column {data-width="300"}
 
 ### Best Dash Hourly
-```{r}
+
+```{r most_hourly}
 most_hourly <- max(df_dashes$per_hour)
 most_hourly_date <- df_dashes$date[df_dashes$per_hour == most_hourly]
 valueBox(value = paste0(as_dollar(most_hourly),"/hr"),
@@ -291,7 +286,8 @@ valueBox(value = paste0(as_dollar(most_hourly),"/hr"),
 ```
 
 ### Highest Tip
-```{r}
+
+```{r best_tip}
 highest_tip <- max(df_deliveries$tip)
 highest_tip_place <- df_deliveries$place[
   df_deliveries$tip == highest_tip]
@@ -301,7 +297,8 @@ valueBox(value = paste(as_dollar(highest_tip), "tip"),
 ```
 
 ### Most deliveries
-```{r}
+
+```{r most_deliveries_dash}
 most_deliveries <- max(df_dashes$deliveries)
 most_deliveries_date <- df_dashes$date[
   df_dashes$deliveries == most_deliveries]
@@ -311,7 +308,8 @@ valueBox(value = paste(most_deliveries, "deliveries"),
 ```
 
 ### Longest dash
-```{r}
+
+```{r longest_dash}
 longest_dash <- max(df_dashes$total_time)
 longest_dash_date <- df_dashes$date[
   df_dashes$total_time == longest_dash]
@@ -320,12 +318,11 @@ valueBox(value = paste(longest_dash, "hours"),
          color = "secondary")
 ```
 
-Column {.tabset}
------------------------------------------------------------------------
+## Column {.tabset}
 
 ### Most Deliveries
 
-```{r}
+```{r most_deliveries}
 places_summary %>%
   slice_max(order_by = count, n = 10) %>% 
   mutate(place = factor(place, levels = rev(place))) %>%
@@ -342,7 +339,7 @@ places_summary %>%
 
 ### Highest Average Tips
 
-```{r}
+```{r highest_tips}
 places_summary %>%
   filter(count > 1) %>% 
   slice_max(order_by = mean_tip, n = 10) %>% 
@@ -360,10 +357,9 @@ places_summary %>%
        y = "")
 ```
 
-Map {data-icon="fa-map"}
-=======================================================================
+# Map {data-icon="fa-map"}
 
-```{r, echo=FALSE}
+```{r map, echo=FALSE}
 htmltools::tags$iframe(src = "heatmap.html",
                        height=450, width="100%",
                        frameborder="0",
@@ -372,4 +368,6 @@ htmltools::tags$iframe(src = "heatmap.html",
 htmltools::tags$script(htmltools::HTML("iFrameResize({ log: true }, '#heatmap')"))
 ```
 
+# Meta {data-icon="comments"}
 
+Here is some meta info?
