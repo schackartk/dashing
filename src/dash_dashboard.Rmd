@@ -238,7 +238,7 @@ df_earnings %>% ggplot(aes(x = date, y = value,
                            color = series, alpha = series)) +
   geom_vline(xintercept = as.Date(c("2021-01-01", "2021-03-13")),
              color = "darkgray", linetype = "dashed",
-             size = 1) +
+             size = 1, alpha = 0.5) +
   geom_point() +
   scale_color_manual(values = c("black", "gray"),
                      labels = c("Hourly for Dash", "Individual Delivery")) +
@@ -271,7 +271,7 @@ df_deliveries %>%
   scale_x_continuous(labels = dollar_format()) +
   nb_theme +
   labs(title = "Histogram of Tips",
-       x = "Tip on Delivery",
+       x = "Tip Amount",
        y = "Number of Deliveries")
 ```
 
