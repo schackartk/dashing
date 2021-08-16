@@ -52,20 +52,32 @@ df_deliveries %>% group_by(peak_pay) %>%
 ```
 
 ```{r pay_over_time}
-df_dashes$date <- df_dashes$date %>% as_date()
+df_earnings <- full_join(df_dashes, df_deliveries) %>% 
+  select(date, per_hour, total) %>% 
+  pivot_longer(cols = c(per_hour, total),
+               names_to = "series") %>% 
+  unique()
 
-df_dashes %>% ggplot(aes(x = date, y = per_hour)) +
-  geom_line() +
-  geom_point(aes(color = day)) +
-  geom_point(data = df_deliveries,
-             aes(x = as_date(date), y = total),
-             color = "gray",
-             alpha = 0.5) +
+df_earnings$date <- as.Date(df_earnings$date)
+
+df_earnings %>% ggplot(aes(x = date, y = value,
+                           color = series, alpha = series)) +
+  geom_vline(xintercept = as.Date(c("2021-01-01", "2021-03-13")),
+             color = "darkgray", linetype = "dashed",
+             size = 1, alpha = 0.75) +
+  geom_point() +
+  scale_color_manual(values = c("black", "gray"),
+                     labels = c("Hourly", "Individual Delivery")) +
+  scale_alpha_manual(values = c(1, 0.5),
+                     labels = c("Hourly", "Individual Delivery")) +
   nb_theme +
+  theme(legend.position = "bottom") +
+  scale_x_date(labels = date_format("%b %Y"), date_breaks = "2 months") +
   scale_y_continuous(labels = dollar_format()) +
   labs(x = "",
-       y = "",
-       caption = "Individual Delivery Earnings in Gray (not average)")
+       caption = "Approximate stimulus check dates as dashed lines",
+       y = "Earnings",
+       color = "", alpha = "")
 ```
 
 ```{r}
