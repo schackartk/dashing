@@ -19,7 +19,8 @@ output:
 }
 </style>
 ```
-```{r setup, include=FALSE}
+
+```{r setup, include=FALSE, warning=FALSE, message=FALSE}
 library(dplyr)
 library(flexdashboard)
 library(forcats)
@@ -29,10 +30,10 @@ library(kableExtra)
 library(lubridate)
 library(magrittr)
 library(readxl)
+library(scales)
 library(stringr)
 library(tibble)
 library(tidyr)
-library(scales)
 
 source("config.R")
 source("helpers.R")
@@ -222,7 +223,7 @@ valueBox(value = str_glue("{avg_per_dash} deliveries"),
 ### Earnings Over Time
 
 ```{r earn_over_time}
-df_earnings <- full_join(df_dashes, df_deliveries) %>% 
+df_earnings <- full_join(df_dashes, df_deliveries, by = c("date", "day")) %>% 
   select(date, per_hour, total) %>% 
   pivot_longer(cols = c(per_hour, total),
                names_to = "series") %>% 
