@@ -1,0 +1,136 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+
+```{r setup, include=FALSE}
+library(gganimate)
+library(readr)
+library(tidyr)
+library(ggmap)
+library(gifski)
+library(lubridate)
+library(dplyr)
+library(hurwitzLab)
+library(stringr)
+library(ggsn)
+
+source("config.R")
+source("secret.R")
+
+register_google(api_key)
+```
+
+```{r}
+to_time <- function(t){
+  hr <- t %/% 3600
+  t <- t %% 3600
+  min <- t %/% 60
+  t <- t %% 60
+  sec <- t %/% 60
+  
+  if(min < 10) {
+    min <- paste0("0",min)
+  }
+  
+  s <- str_glue("{hr}:{min}")
+  
+  s
+}
+```
+
+```{r load_data, include=FALSE}
+locations <- read_csv(paste0("../",data_paths['wrangled_locations']))
+```
+
+```{r clean_data, include=FALSE}
+locations <- locations %>% separate(timestamp, into=c("date", "time"),
+                                    sep=" ") %>% 
+  group_by(date)
+
+locations$time <- locations$time %>% hms()
+
+practice_locations <- locations #%>%
+  #filter(date=="2021-06-07" | date=="2021-06-04")
+
+small_locations <- practice_locations %>%
+  #filter(time > hms("17:00:00") &time < hms("18:00:00")) %>% 
+  distinct(date, time, .keep_all = TRUE) %>%  # remove duplicate rows
+  mutate(actual=TRUE) %>% 
+  pivot_wider(names_from=date, values_from=c(latitude, longitude, actual)) %>%
+  arrange(time) %>% 
+  fill(starts_with("actual"), .direction="up") %>% # rows before end of dash actual will be TRUE
+  fill(-time, -starts_with("actual")) %>% # fill down missing values
+  pivot_longer(cols = -time, names_to = c("dim", "date"),
+               names_sep = "_") %>% 
+  pivot_wider(names_from = dim) %>% 
+  arrange(date) %>% 
+  na.omit() %>% 
+  select(-actual) %>% 
+  mutate(latitude = latitude - 0.002,
+         longitude = longitude + 0.0014) %>% 
+  group_by(date)
+
+first_locations <- small_locations %>% slice(1)
+first_locations$event <- "first"
+
+last_locations <- small_locations %>% top_n(wt = time, n = 1)
+last_locations$event <- "last"
+
+small_locations$event <- "dashing"
+
+small_locations <- full_join(first_locations, small_locations)
+
+small_locations <- full_join(last_locations, small_locations)
+
+small_locations <- small_locations %>%
+  rename("long" = longitude,
+         "lat" = latitude)
+```
+
+```{r get_map, include=FALSE}
+avg_loc <- c(mean(locations$longitude), mean(locations$latitude))
+
+map <- get_googlemap(avg_loc, zoom = 11)
+```
+
+
+```{r plot}
+plotted_map <- ggmap(map) +
+  geom_point(data=small_locations,
+             aes(x=long, y=lat,
+                 group = seq_along(date),
+                 color=event, size=event,
+                 alpha=event)) +
+  scale_color_manual(values = c("#333333", "#F5811F", "#018D97")) +
+  scale_size_manual(values = c(2, 6, 6)) +
+  scale_alpha_manual(values = c(0.8, 0.25, 0.25)) +
+  labs(subtitle="Orange dot = Clock in, Blue dot = Clock out") +
+  # scalebar(data = small_locations, dist=1, dist_unit = "km",
+  #          transform = TRUE) +
+  theme(axis.line=element_blank(),axis.text.x=element_blank(),
+        axis.text.y=element_blank(),axis.ticks=element_blank(),
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank(),
+        plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5),
+        plot.caption = element_text(hjust = 0.5),
+        legend.position = "none")
+
+anim <- plotted_map +
+  transition_time(time) +
+  ggtitle("All My Dashes, Shown as One Day",
+          subtitle = '{to_time(frame_time)}')
+  #ease_aes()
+  #enter_fade() +
+  #shadow_wake(wake_length = 0.01, alpha = 0, colour = "#CCCCCC")
+
+anim <- animate(anim, duration=90, fps = 10,
+                renderer = gifski_renderer(), 
+                height=640, width=640, end_pause = 25)
+  
+
+```
+
