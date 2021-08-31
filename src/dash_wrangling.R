@@ -1,24 +1,34 @@
-library(dplyr)
-library(forcats)
-library(lubridate)
-library(magrittr)
-library(readxl)
-library(stringr)
+# Purpose: Wrangle data from dash excel
+# Author: Kenneth Schackart (schackartk1@gmail.com)
 
-source("src/config.R")
-source("src/helpers.R")
+# Imports -----------------------------------------------------------------
 
-# Custom functions for data wrangling are in helpers.R
+## Library calls ------------------------------------------------------------
 
-#df_dashes 10-13, 10-18, 10-23 uncertain miles, time and amt good
+library(dplyr)          # wrangling
+library(magrittr)       # %>% 
+library(readxl)         # read_excel() 
+
+## File imports -------------------------------------------------------------
+
+source("src/config.R")  # data_paths[]
+source("src/helpers.R") # wrangle_*()
+
+# Data wrangling ------------------------------------------------------------
+
+## Dashes -------------------------------------------------------------------
 
 df_dashes <- read_excel(path = data_paths['excel_file'],
                         sheet = data_paths['dashes']) %>% 
   wrangle_dashes()
 
+## Deliveries ---------------------------------------------------------------
+
 df_deliveries <- read_excel(path = data_paths['excel_file'],
                             sheet = data_paths['deliveries']) %>% 
   wrangle_deliveries()
+
+## Summaries ----------------------------------------------------------------
 
 places_summary <- df_deliveries %>% summarize_places()
 
@@ -30,5 +40,8 @@ totals <- calculate_totals(df_dashes,
                            df_deliveries,
                            places_summary)
 
-save(df_dashes, df_deliveries, places_summary, weekday_summary, tax_df, totals,
+## Save results -------------------------------------------------------------
+
+save(df_dashes, df_deliveries, places_summary,
+     weekday_summary, tax_df, totals,
      file = data_paths['wrangled_data'])
