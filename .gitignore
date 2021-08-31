@@ -7,3 +7,4 @@ src/*.html
 .Rprofile
 .snakemake
 src/*.svg
+src/secret.R
