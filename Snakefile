@@ -31,7 +31,7 @@ rule animation:
     input:
         "data/dash_locations.csv"
     output:
-        "data/animation.gif"
+        "src/animation.gif"
     shell:
         "Rscript --vanilla src/animated_map.R"
 
@@ -39,7 +39,7 @@ rule dashboard:
     input:
         "data/wrangled_data.Rdata",
         "src/heatmap.html"
-        "data/animation.gif"
+        "src/animation.gif"
     output:
         "src/dash_dashboard.html"
     shell:
