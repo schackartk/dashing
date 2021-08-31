@@ -358,7 +358,7 @@ places_summary %>%
        y = "")
 ```
 
-# Map {data-icon="fa-map"}
+# Maps {data-icon="fa-map"}
 
 ## Column
 
@@ -373,7 +373,9 @@ htmltools::tags$script(htmltools::HTML("iFrameResize({ log: true }, '#heatmap')"
 
 ## Column
 
-!['Dashing animation'](../data/animation.gif)
+```{r animated, echo=FALSE, out.height=450, out.width=450}
+knitr::include_graphics(paste0("../",data_paths['animation']))
+```
 
 
 # Meta {data-icon="fa-comment"}
