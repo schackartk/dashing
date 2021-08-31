@@ -4,4 +4,5 @@ data_paths <- c(
   'deliveries' = 'deliveries',
   'raw_locations' = 'data/Takeout/Location History/Location History.json',
   'wrangled_data' = 'data/wrangled_data.Rdata',
-  'wrangled_locations' = 'data/dash_locations.csv')
+  'wrangled_locations' = 'data/dash_locations.csv',
+  'animation' = 'data/animation.gif')
