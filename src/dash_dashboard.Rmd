@@ -20,7 +20,7 @@ output:
 </style>
 ```
 
-```{r setup, include=FALSE, warning=FALSE, message=FALSE}
+```{r setup, include=FALSE}
 library(dplyr)
 library(flexdashboard)
 library(forcats)
@@ -222,7 +222,7 @@ valueBox(value = str_glue("{avg_per_dash} deliveries"),
 
 ### Earnings Over Time
 
-```{r earn_over_time}
+```{r earn_over_time, cache=TRUE}
 df_earnings <- full_join(df_dashes, df_deliveries, by = c("date", "day")) %>% 
   select(date, per_hour, total) %>% 
   pivot_longer(cols = c(per_hour, total),
@@ -253,7 +253,7 @@ df_earnings %>% ggplot(aes(x = date, y = value,
 
 ### Tips Histogram
 
-```{r tips_histo}
+```{r tips_histo, cache=TRUE}
 avg_tip = mean(df_deliveries$tip)
 
 df_deliveries %>%
@@ -323,7 +323,7 @@ valueBox(value = paste(longest_dash, "hours"),
 
 ### Most Deliveries
 
-```{r most_deliveries}
+```{r most_deliveries, cache=TRUE}
 places_summary %>%
   slice_max(order_by = count, n = 10) %>% 
   mutate(place = factor(place, levels = rev(place))) %>%
@@ -340,7 +340,7 @@ places_summary %>%
 
 ### Highest Average Tips
 
-```{r highest_tips}
+```{r highest_tips, cache=TRUE}
 places_summary %>%
   filter(count > 1) %>% 
   slice_max(order_by = mean_tip, n = 10) %>% 
@@ -360,6 +360,8 @@ places_summary %>%
 
 # Map {data-icon="fa-map"}
 
+## Column
+
 ```{r map, echo=FALSE}
 htmltools::tags$iframe(src = "heatmap.html",
                        height=450, width="100%",
@@ -369,6 +371,51 @@ htmltools::tags$iframe(src = "heatmap.html",
 htmltools::tags$script(htmltools::HTML("iFrameResize({ log: true }, '#heatmap')"))
 ```
 
-# Meta {data-icon="comments"}
+## Column
 
-Here is some meta info?
+!['Dashing animation'](../data/animation.gif)
+
+
+# Meta {data-icon="fa-comment"}
+
+## Column
+
+### Dashing Data
+
+Dasher app does not have an API for automating access to your information as a
+Dasher!
+
+This means that I had to record and organize my Dasher data myself.
+
+Most data is present in the app, such as the earnings for each delivery.
+
+I recorded the mileage myself, and is necessary for tax purposes anyway.
+
+Here are a few notes on the nature of the data:
+
+* Although I may pick up from many locations, if they are the same chain,
+that is all that is recorded. For example, all McDonalds locations are just
+recorded as McDonalds.
+
+* All earnings shown here are gross; they are before taxes, gas, and other costs.
+
+For more detailed information on the data I recorded, you can see my GitHub repo
+[README.md](https://github.com/schackartk/dashing/tree/main/data).
+
+
+## Column
+
+### Location Data
+
+Location data is downloaded from [Google Takeout](takeout.google.com/).
+All that is needed for this information to be available to you is having
+*Location history* by Google Maps allowed on your phone.
+
+I process the data using a small R package I wrote for this purpose called
+[takeout](https://github.com/schackartk/takeout). The heatmap shown is made
+using Python. I have made a similar heatmap in R, but R's implementation of Leaflet
+doesn't seem capable of making it look as nice as Python's. 
+
+The reason the map window is odd is that I am using an iframe to display a
+separate html file (from Python), instead of building the map in the R dashboard
+file.
