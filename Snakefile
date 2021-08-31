@@ -26,11 +26,20 @@ rule heatmap:
         "src/heatmap.html"
     shell:
         "python3 src/dash_heatmap.py -o {output} {input}"
+        
+rule animation:
+    input:
+        "data/dash_locations.csv"
+    output:
+        "data/animation.gif"
+    shell:
+        "Rscript --vanilla src/animated_map.R"
 
 rule dashboard:
     input:
         "data/wrangled_data.Rdata",
         "src/heatmap.html"
+        "data/animation.gif"
     output:
         "src/dash_dashboard.html"
     shell:
