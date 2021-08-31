@@ -8,3 +8,4 @@ src/*.html
 .snakemake
 src/*.svg
 src/secret.R
+src/*/
