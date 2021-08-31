@@ -5,22 +5,22 @@
 
 ## Library calls ------------------------------------------------------------
 
-library(dplyr)      # cleaning
-library(gganimate)  # animation
-library(ggmap)      # ggmap()
-library(ggsn)       # Scalebar
-library(gifski)     # Renderer
-library(lubridate)  # hms()
-library(readr)      # read_csv()
-library(stringr)    # str_glue()
-library(tidyr)      # pivot_*()
+library(dplyr)          # cleaning
+library(gganimate)      # animation
+library(ggmap)          # ggmap()
+library(ggsn)           # Scalebar
+library(gifski)         # Renderer
+library(lubridate)      # hms()
+library(readr)          # read_csv()
+library(stringr)        # str_glue()
+library(tidyr)          # pivot_*()
 
-##  File imports  -----------------------------------------------------------
+## File imports  -----------------------------------------------------------
 
-source("config.R")  # data_paths[]
-source("secret.R")  # api_key
+source("src/config.R")  # data_paths[]
+source("src/secret.R")  # api_key
 
-locations <- read_csv(paste0("../",data_paths['wrangled_locations']))
+locations <- read_csv(paste0(data_paths['wrangled_locations']))
 
 # Functions -----------------------------------------------------------------
 
@@ -59,20 +59,18 @@ add_events <- function(df){
 
 map_locations <- locations %>% 
   separate(timestamp, into=c("date", "time"), sep=" ") %>% 
-  #group_by(date) %>% 
   rename("long" = longitude, "lat" = latitude) %>%
-  #filter(date=="2021-06-07" | date=="2021-06-04") %>% 
-  #filter(time > hms("17:00:00") &time < hms("18:00:00")) %>% 
+  #filter(date =="2021-06-07" | date=="2021-06-04") %>% 
+  #filter(time > hms("17:00:00") & time < hms("18:00:00")) %>% 
   distinct(date, time, .keep_all=TRUE) %>%  # remove duplicate rows
   mutate(actual=TRUE) %>% 
   pivot_wider(names_from=date, values_from=c(lat, long, actual)) %>%
-  #arrange(time) %>% 
+  arrange(time) %>% 
   fill(starts_with("actual"), .direction="up") %>% # rows before end of dash actual will be TRUE
   fill(-time, -starts_with("actual")) %>% # fill down missing values
   pivot_longer(cols=-time, names_to=c("dim", "date"),
                names_sep="_") %>% 
   pivot_wider(names_from=dim) %>% 
-  #arrange(date) %>% 
   na.omit() %>% 
   select(-actual) %>% 
   mutate(lat = lat - 0.002,
@@ -122,8 +120,8 @@ plotted_map <- ggmap(map) +
   anim_scalebar +
   anim_theme +
   transition_time(time) +
-  ggtitle("All My Dashes, Shown as One Day",
-          subtitle = '{to_time(frame_time)}') +
+  labs(title="{to_time(frame_time)}",
+       caption="Orange and blue flashes show clocking in and out") +
   ease_aes() +
   shadow_wake(wake_length = 0.01, alpha = 0, colour = "#CCCCCC")
 
@@ -131,7 +129,7 @@ plotted_map <- ggmap(map) +
 
 anim <- animate(plotted_map, duration=90, fps=20,
                 renderer=gifski_renderer(), 
-                height=480, width=480, end_pause=20)
+                height=640, width=640, end_pause=20)
 
 # Save animation ------------------------------------------------------------
 
