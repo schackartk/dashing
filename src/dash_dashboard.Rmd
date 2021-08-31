@@ -272,6 +272,27 @@ df_deliveries %>%
        y = "Number of Deliveries")
 ```
 
+### Base Pay Histogram
+
+```{r base_histo, cache=TRUE}
+avg_base = mean(df_deliveries$base_pay)
+
+df_deliveries %>%
+  arrange(base_pay) %>% 
+  ggplot(aes(x = base_pay)) +
+  geom_histogram(binwidth = 0.5, fill = "lightgray", color = "gray") +
+  geom_vline(xintercept = avg_base, color = "darkgray",
+             linetype = "dashed", size = 1) +
+  geom_text(aes(x = avg_base, y = 440), nudge_x = 2.2,
+            label = str_glue("Average: ${round(avg_base,2)}"),
+            color = "darkgray") +
+  scale_x_continuous(labels = dollar_format()) +
+  nb_theme +
+  labs(title = "Histogram of Base Pay",
+       x = "Base Pay Amount",
+       y = "Number of Deliveries")
+```
+
 # Hi-Scores {data-icon="fa-medal"}
 
 ## Column {data-width="300"}
@@ -374,7 +395,7 @@ htmltools::tags$script(htmltools::HTML("iFrameResize({ log: true }, '#heatmap')"
 ## Column
 
 ```{r animated, echo=FALSE, out.height=450, out.width=450}
-knitr::include_graphics(paste0("../",data_paths['animation']))
+knitr::include_graphics("animation.gif")
 ```
 
 
