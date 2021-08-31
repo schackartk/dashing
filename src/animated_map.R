@@ -133,6 +133,6 @@ anim <- animate(plotted_map, duration=90, fps=20,
 
 # Save animation ------------------------------------------------------------
 
-anim_save(anim, filename="../data/animation.gif")
+anim_save(anim, filename="animation.gif")
 
 
