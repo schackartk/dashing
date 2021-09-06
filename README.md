@@ -1,6 +1,6 @@
 This repository contains analyses of data obtained as a Dasher.
 
-## [Dashboard](https://schackartk.github.io/dashing/dashboard.html)
+## [Dashboard](https://schackartk.github.io/dashing/pages/dashboard.html)
 
 This dashboard is a [flexdashboard](https://pkgs.rstudio.com/flexdashboard/) made using R. Unfortunately, Doordash does not provide an API for fetching Dasher data. So, I got the data from the Dasher app, and recorded it by hand in an excel spreadsheet.
 
