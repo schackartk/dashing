@@ -1,4 +1,4 @@
-This repository contains analyses of data obtained as a Dasher. It is also available on GitHib.io [here](https://schackartk.github.io/dashing/).
+This repository contains analyses of data obtained as a Dasher. It is also available on github.io [here](https://schackartk.github.io/dashing/).
 
 ## [Dashboard](https://schackartk.github.io/dashing/pages/dashboard.html)
 
