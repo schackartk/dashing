@@ -256,13 +256,18 @@ df_earnings %>% ggplot(aes(x = date, y = value,
 ```{r tips_histo, cache=TRUE}
 avg_tip = mean(df_deliveries$tip)
 
+max_freq <- max(hist(x=df_deliveries$tip,
+                     breaks=seq(0, max(df_deliveries$tip), by=0.5),
+                     plot=FALSE)$counts)
+
 df_deliveries %>%
   arrange(tip) %>% 
   ggplot(aes(x = tip)) +
-  geom_histogram(binwidth = 1, fill = "lightgray", color = "gray") +
+  geom_histogram(breaks=seq(0, max(df_deliveries$tip), by=1),
+                 fill = "lightgray", color = "gray") +
   geom_vline(xintercept = avg_tip, color = "darkgray",
              linetype = "dashed", size = 1) +
-  geom_text(aes(x = avg_tip, y = 155), nudge_x = 2.2,
+  geom_text(aes(x = avg_tip, y = max_freq), nudge_x = 2.2,
             label = str_glue("Average: ${round(avg_tip,2)}"),
             color = "darkgray") +
   scale_x_continuous(labels = dollar_format()) +
@@ -275,15 +280,22 @@ df_deliveries %>%
 ### Base Pay Histogram
 
 ```{r base_histo, cache=TRUE}
-avg_base = mean(df_deliveries$base_pay)
+avg_base <-  mean(df_deliveries$base_pay)
+
+max_freq <- max(hist(x=df_deliveries$base_pay,
+                     breaks=seq(0, max(df_deliveries$base_pay), by=0.5),
+                     plot=FALSE)$counts)
 
 df_deliveries %>%
   arrange(base_pay) %>% 
   ggplot(aes(x = base_pay)) +
-  geom_histogram(binwidth = 0.5, fill = "lightgray", color = "gray") +
+  geom_histogram(breaks=seq(min(df_deliveries$base_pay),
+                            max(df_deliveries$base_pay),
+                            by=0.5),
+                 fill = "lightgray", color = "gray") +
   geom_vline(xintercept = avg_base, color = "darkgray",
              linetype = "dashed", size = 1) +
-  geom_text(aes(x = avg_base, y = 440), nudge_x = 2.2,
+  geom_text(aes(x = avg_base, y = max_freq), nudge_x = 2.2,
             label = str_glue("Average: ${round(avg_base,2)}"),
             color = "darkgray") +
   scale_x_continuous(labels = dollar_format()) +
