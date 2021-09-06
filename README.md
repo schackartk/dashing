@@ -8,6 +8,10 @@ This dashboard is a [flexdashboard](https://pkgs.rstudio.com/flexdashboard/) mad
 
 This heatmap was created in Python using the [folium](http://python-visualization.github.io/folium/) package. Location data is recorded from my smartphone using Google location tracking in Maps. Data are downloaded from [Google Takeout](https://takeout.google.com/). Preprocessing of location data is done in R, with the help of a small custom R package I created for this purpose called [takeout](https://github.com/schackartk/takeout). The data shown in the heatmap are locations that were logged only during dashes.
 
+## [Animated Dashes](https://schackartk.github.io/dashing/animation.html)
+
+This animation is was made using [gganimate](https://gganimate.com/) with the same location data as described above. All dashes are aligned by time of day, so you can see where I was during each dash given the time of day.
+
 ## About this Project
 
 ### Reproducibility
