@@ -393,23 +393,22 @@ places_summary %>%
 
 # Maps {data-icon="fa-map"}
 
-## Column
-
-```{r map, echo=FALSE}
-htmltools::tags$iframe(src="heatmap.html",
-                       height=450, width="100%",
-                       frameborder="0",
-                       id="heatmap")
-
-htmltools::tags$script(htmltools::HTML("iFrameResize({ log: true }, '#heatmap')"))
-```
 
 ## Column
 
-```{r animated, echo=FALSE, out.height=450, out.width=450}
-knitr::include_graphics("animation.gif")
-```
+### [Heatmap](https://schackartk.github.io/dashing/pages/heatmap.html)
 
+*Click the header above*
+
+The location heatmap represents where I was most frequently while dashing. The graph is interactive and can be zoomed into and out of.
+
+## Column
+
+### [Animation](https://schackartk.github.io/dashing/pages/animation.html)
+
+*Click the header above*
+
+The animation shows the routes of all of my dashes, aligned by time of day. Brief orange and blue flashes indicate clocking on and off of the Doordash app.
 
 # Meta {data-icon="fa-comment"}
 
@@ -450,7 +449,3 @@ I process the data using a small R package I wrote for this purpose called
 [takeout](https://github.com/schackartk/takeout). The heatmap shown is made
 using Python. I have made a similar heatmap in R, but R's implementation of Leaflet
 doesn't seem capable of making it look as nice as Python's. 
-
-The reason the map window is odd is that I am using an iframe to display a
-separate html file (from Python), instead of building the map in the R dashboard
-file.
